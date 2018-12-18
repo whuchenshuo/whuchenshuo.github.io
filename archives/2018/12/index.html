@@ -26,6 +26,8 @@
         
     
     
+        <meta property="og:image" content="http://yoursite.com/assets/images/author.jpg"/>
+    
     
     
     
@@ -42,8 +44,6 @@
             <!-- Define author's picture -->
 
 
-    
-
 <header id="header" data-behavior="2">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
@@ -51,8 +51,10 @@
     </div>
     
         
-            <a class="header-right-picture " href="#about">
+            <a class="header-right-icon open-algolia-search" href="#search">
         
+        
+            <i class="fa fa-search fa-lg"></i>
         
         </a>
     
@@ -61,8 +63,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="2">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/author.jpg" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Mr.chen</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>less is more</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -202,11 +219,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/author.jpg" alt="作者的图片">
         
             <h4 id="about-card-name">Mr.chen</h4>
         
@@ -304,6 +327,13 @@
 <script src="/assets/js/script-dbd16rvloemmuxdzniplmnxxvwoz24eya9wol0b7vvmlokgqsjivmb8dnscy.min.js"></script>
 <!--SCRIPTS END-->
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('IZFB5246J9', 'b0d46810840379e9ee4cbe29fd7ade3f');
+        var algoliaIndex = algoliaClient.initIndex('search');
+    </script>
 
 
     </body>

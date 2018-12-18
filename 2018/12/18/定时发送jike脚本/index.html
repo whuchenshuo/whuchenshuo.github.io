@@ -13,7 +13,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto"],"image":"https://www.gravatar.com/avatar/ce9cdad6cd2399400022329d6434f4d3"},"articleBody":"##test1alert('hello world');1234print('hello world')    def hello():        pass    return\n","dateCreated":"2018-12-18T00:38:29+08:00","dateModified":"2018-12-18T15:07:53+08:00","datePublished":"2018-12-18T00:38:29+08:00","description":"","headline":"定时发送jike脚本","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/12/18/定时发送jike脚本/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto"],"image":"https://www.gravatar.com/avatar/ce9cdad6cd2399400022329d6434f4d3","logo":{"@type":"ImageObject","url":"https://www.gravatar.com/avatar/ce9cdad6cd2399400022329d6434f4d3"}},"url":"http://yoursite.com/2018/12/18/定时发送jike脚本/","keywords":"jike python linux"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto"],"image":"author.jpg"},"articleBody":"##test1alert('hello world');1234print('hello world')    def hello():        pass    return\n","dateCreated":"2018-12-18T00:38:29+08:00","dateModified":"2018-12-18T15:07:53+08:00","datePublished":"2018-12-18T00:38:29+08:00","description":"","headline":"定时发送jike脚本","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://yoursite.com/2018/12/18/定时发送jike脚本/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto"],"image":"author.jpg","logo":{"@type":"ImageObject","url":"author.jpg"}},"url":"http://yoursite.com/2018/12/18/定时发送jike脚本/","keywords":"jike python linux"}</script>
     <meta name="description" content="##test1alert(&apos;hello world&apos;);1234print(&apos;hello world&apos;)    def hello():        pass    return">
 <meta name="keywords" content="jike python linux">
 <meta property="og:type" content="blog">
@@ -31,6 +31,8 @@
         
     
     
+        <meta property="og:image" content="http://yoursite.com/assets/images/author.jpg"/>
+    
     
     
     
@@ -47,8 +49,6 @@
             <!-- Define author's picture -->
 
 
-    
-
 <header id="header" data-behavior="5">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
     <div class="header-title">
@@ -56,8 +56,10 @@
     </div>
     
         
-            <a class="header-right-picture " href="#about">
+            <a class="header-right-icon open-algolia-search" href="#search">
         
+        
+            <i class="fa fa-search fa-lg"></i>
         
         </a>
     
@@ -66,8 +68,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="5">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/author.jpg" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Mr.chen</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>less is more</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -388,11 +405,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/author.jpg" alt="作者的图片">
         
             <h4 id="about-card-name">Mr.chen</h4>
         
@@ -492,6 +515,13 @@
 
     
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('IZFB5246J9', 'b0d46810840379e9ee4cbe29fd7ade3f');
+        var algoliaIndex = algoliaClient.initIndex('search');
+    </script>
 
 
     </body>
