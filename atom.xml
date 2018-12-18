@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="http://www.skyjooy.cn/"/>
   <updated>2018-12-18T07:07:53.090Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>http://www.skyjooy.cn/</id>
   
   <author>
     <name>Mr.chen</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>定时发送jike脚本</title>
-    <link href="http://yoursite.com/2018/12/18/%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81jike%E8%84%9A%E6%9C%AC/"/>
-    <id>http://yoursite.com/2018/12/18/定时发送jike脚本/</id>
+    <link href="http://www.skyjooy.cn/2018/12/18/%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81jike%E8%84%9A%E6%9C%AC/"/>
+    <id>http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/</id>
     <published>2018-12-17T16:38:29.000Z</published>
     <updated>2018-12-18T07:07:53.090Z</updated>
     
@@ -34,17 +34,17 @@
     
     </summary>
     
-      <category term="python脚本" scheme="http://yoursite.com/categories/python%E8%84%9A%E6%9C%AC/"/>
+      <category term="python脚本" scheme="http://www.skyjooy.cn/categories/python%E8%84%9A%E6%9C%AC/"/>
     
     
-      <category term="jike python linux" scheme="http://yoursite.com/tags/jike-python-linux/"/>
+      <category term="jike python linux" scheme="http://www.skyjooy.cn/tags/jike-python-linux/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="http://yoursite.com/2018/12/17/hello-world/"/>
-    <id>http://yoursite.com/2018/12/17/hello-world/</id>
+    <link href="http://www.skyjooy.cn/2018/12/17/hello-world/"/>
+    <id>http://www.skyjooy.cn/2018/12/17/hello-world/</id>
     <published>2018-12-17T05:11:22.877Z</published>
     <updated>2018-12-17T05:11:22.877Z</updated>
     
