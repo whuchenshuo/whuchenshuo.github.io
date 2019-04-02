@@ -1,0 +1,632 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Skyjoy">
+    <title>算法题:成绩排序 - Skyjoy</title>
+    <meta name="author" content="Mr.chen">
+    
+    
+        <link rel="icon" href="http://www.skyjooy.cn/assets/images/icon.png">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto"],"image":"https://i.loli.net/2018/12/19/5c19261e6111e.jpg"},"articleBody":"题目描述查找和排序题目：输入任意（用户，成绩）序列，可以获得成绩从高到低或从低到高的排列,相同成绩都按先录入排列在前的规则处理。示例：\n\njack      70\npeter     96\nTom       70\nsmith     67从高到低  成绩 \npeter     96 \njack      70 \nTom       70 \nsmith     67从低到高\nsmith     67\njack      70 \nTom      70 \npeter     96输入描述：\n输入多行，先输入要排序的人的个数，然后输入排序方法0（降序）或者1（升序）再分别输入他们的名字和成绩，以一个空格隔开\n\n输出描述\n按照指定方式输出名字和成绩，名字和成绩之间以一个空格隔开\n\n示例1  输入\n3\n0\nfang 90\nyang 50\nning 70\n输出\nfang 90\nning 70\nyang 50\n\n\n\n—解法—python12345678910111213141516while True:    try:        dic = []        a, b = int(input()), input()        isDesc = True if b == \"0\" else False        for i in range(a):            name, score = input().split()            dic.append((name, int(score)))        if isDesc:            tag = True        else:            tag = False        for i in sorted(dic, key=lambda item: item[1], reverse=tag):            print(i[0] + \" \" + str(i[1]))    except:        break\npython直接使用了自带的sorted函数，并且利用dic很好的解决了类似c/c++中需要构造结构体的尴尬。sorted函数的用法如下：语法\n\nsorted(iterable, /, *, key=None, reverse=False)\nReturn a new list containing all items from the iterable in ascending order.\nA custom key function can be supplied to customize the sort order, and the   reverse flag can be set to request the result in descending order.\n\n\niterable –可用来迭代的对象\nkey –用来进行排序的元素，可以从可迭代对象中取得\nreverse –排序的规则，True为降序 False为生序（默认）返回值为排序后的list\n\n\n解法-c因为使用了快速排序-非稳定排序，导致排序之后次序会发生改变，所以应该采用别种排序，等待修改。12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364////  Created by c on 2019/4/1.//  Copyright © 2019 c. All rights reserved.//#include &lt;stdio.h&gt;typedef struct&#123;    char name[15];    int score;    int tag;&#125;stu;void quick_sort(int s[],int tags[],int l,int r)&#123;    if (l&gt;=r) &#123;        return ;    &#125;    int i = l,j = r,x = s[l],y=tags[l];    while (i&lt;j) &#123;        while (i&lt;j&amp;&amp;s[j]&gt;=x)            j--;        s[i]=s[j];        tags[i]=tags[j];        while (i&lt;j&amp;&amp;s[i]&lt;x)            i++;        s[j]=s[i];        tags[j]=tags[i];        &#125;        s[i]=x;        tags[i]=y;        quick_sort(s,tags, l, i-1);        quick_sort(s,tags, i+1, r);    &#125;int main()&#123;        int num ,way ;    while (~scanf(\"%d %d\",&amp;num,&amp;way)) &#123;    stu stulist[100];    int scores[100];    int tags[100];    for (int i=0;i&lt;num;i++)&#123;        scanf(\"%s %d\",stulist[i].name,&amp;stulist[i].score);        stulist[i].tag=(i+1);        scores[i]=stulist[i].score;        tags[i]=i+1;    &#125;    quick_sort(scores,tags, 0, num-1);    switch (way) &#123;        case 0:            for (int j=num-1;j&gt;=0;j--) &#123;                printf(\"%s %d\\n\",stulist[tags[j]-1].name,scores[j]);            &#125;            break;        case 1:            for (int j=0;j&lt;num;j++) &#123;                printf(\"%s %d\\n\",stulist[tags[j]-1].name,scores[j]);            &#125;            break;    &#125;    &#125;    return 0;&#125;\n","dateCreated":"2019-04-02T02:45:18+08:00","dateModified":"2019-04-02T12:57:07+08:00","datePublished":"2019-04-02T02:45:18+08:00","description":"题目描述查找和排序","headline":"算法题:成绩排序","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto"],"image":"https://i.loli.net/2018/12/19/5c19261e6111e.jpg","logo":{"@type":"ImageObject","url":"https://i.loli.net/2018/12/19/5c19261e6111e.jpg"}},"url":"http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/","keywords":"python, c/c++"}</script>
+    <meta name="description" content="题目描述查找和排序">
+<meta name="keywords" content="python,c&#x2F;c++">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="算法题:成绩排序">
+<meta property="og:url" content="http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/index.html">
+<meta property="og:site_name" content="Skyjoy">
+<meta property="og:description" content="题目描述查找和排序">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-02T04:57:07.725Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法题:成绩排序">
+<meta name="twitter:description" content="题目描述查找和排序">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://i.loli.net/2018/12/19/5c19261e6111e.jpg"/>
+    
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-c4ozcsklz4kht2pebhp44xorvyverh23toayhn7i6ubrpyedak24hv1v0hyd.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Skyjoy</a>
+    </div>
+    
+        
+            <a class="header-right-icon open-algolia-search" href="#search">
+        
+        
+            <i class="fa fa-search fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://i.loli.net/2018/12/19/5c19261e6111e.jpg" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Mr.chen</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>less is more</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="主页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">主页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link open-algolia-search" href="#search" title="搜索">
+                    
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/mailto" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            算法题:成绩排序
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2019-04-02T02:45:18+08:00">
+	
+		    4月 02, 2019
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/数据结构与算法/">数据结构与算法</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <h6 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h6><p>查找和排序<br><a id="more"></a><br>题目：输入任意（用户，成绩）序列，可以获得成绩从高到低或从低到高的排列,相同成绩都按先录入排列在前的规则处理。<br>示例：</p>
+<ul>
+<li>jack      70</li>
+<li>peter     96</li>
+<li>Tom       70</li>
+<li>smith     67<br>从高到低  成绩 </li>
+<li>peter     96 </li>
+<li>jack      70 </li>
+<li>Tom       70 </li>
+<li>smith     67<br>从低到高</li>
+<li>smith     67</li>
+<li>jack      70 </li>
+<li>Tom      70 </li>
+<li>peter     96<h6 id="输入描述："><a href="#输入描述：" class="headerlink" title="输入描述："></a>输入描述：</h6><blockquote>
+<p>输入多行，先输入要排序的人的个数，然后输入排序方法0（降序）或者1（升序）再分别输入他们的名字和成绩，以一个空格隔开</p>
+</blockquote>
+<h6 id="输出描述"><a href="#输出描述" class="headerlink" title="输出描述"></a>输出描述</h6><blockquote>
+<p>按照指定方式输出名字和成绩，名字和成绩之间以一个空格隔开</p>
+</blockquote>
+<h6 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h6>  输入<blockquote>
+<pre><code>3
+0
+fang 90
+yang 50
+ning 70
+输出
+fang 90
+ning 70
+yang 50
+</code></pre></blockquote>
+</li>
+</ul>
+<p>—<br>解法—python<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        dic = []</span><br><span class="line">        a, b = int(input()), input()</span><br><span class="line">        isDesc = <span class="keyword">True</span> <span class="keyword">if</span> b == <span class="string">"0"</span> <span class="keyword">else</span> <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(a):</span><br><span class="line">            name, score = input().split()</span><br><span class="line">            dic.append((name, int(score)))</span><br><span class="line">        <span class="keyword">if</span> isDesc:</span><br><span class="line">            tag = <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            tag = <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> sorted(dic, key=<span class="keyword">lambda</span> item: item[<span class="number">1</span>], reverse=tag):</span><br><span class="line">            print(i[<span class="number">0</span>] + <span class="string">" "</span> + str(i[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
+<p>python直接使用了自带的sorted函数，并且利用dic很好的解决了类似c/c++中需要构造结构体的尴尬。sorted函数的用法如下：<br>语法</p>
+<blockquote>
+<p><strong>sorted</strong>(iterable, /, *, key=None, reverse=False)</p>
+<p>Return a new list containing all items from the iterable in ascending order.</p>
+<p>A custom key function can be supplied to customize the sort order, and the<br>   reverse flag can be set to request the result in descending order.</p>
+</blockquote>
+<ul>
+<li>iterable –可用来迭代的对象</li>
+<li>key –用来进行排序的元素，可以从可迭代对象中取得</li>
+<li>reverse –排序的规则，True为降序 False为生序（默认）<br>返回值为排序后的list</li>
+</ul>
+<hr>
+<p>解法-c<br>因为使用了快速排序-非稳定排序，导致排序之后次序会发生改变，所以应该采用别种排序，等待修改。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//  Created by c on 2019/4/1.</span></span><br><span class="line"><span class="comment">//  Copyright © 2019 c. All rights reserved.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">15</span>];</span><br><span class="line">    <span class="keyword">int</span> score;</span><br><span class="line">    <span class="keyword">int</span> tag;</span><br><span class="line">&#125;stu;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quick_sort</span><span class="params">(<span class="keyword">int</span> s[],<span class="keyword">int</span> tags[],<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l&gt;=r) &#123;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> i = l,j = r,x = s[l],y=tags[l];</span><br><span class="line">    <span class="keyword">while</span> (i&lt;j) &#123;</span><br><span class="line">        <span class="keyword">while</span> (i&lt;j&amp;&amp;s[j]&gt;=x)</span><br><span class="line">            j--;</span><br><span class="line">        s[i]=s[j];</span><br><span class="line">        tags[i]=tags[j];</span><br><span class="line">        <span class="keyword">while</span> (i&lt;j&amp;&amp;s[i]&lt;x)</span><br><span class="line">            i++;</span><br><span class="line">        s[j]=s[i];</span><br><span class="line">        tags[j]=tags[i];</span><br><span class="line">        &#125;</span><br><span class="line">        s[i]=x;</span><br><span class="line">        tags[i]=y;</span><br><span class="line">        quick_sort(s,tags, l, i<span class="number">-1</span>);</span><br><span class="line">        quick_sort(s,tags, i+<span class="number">1</span>, r);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">int</span> num ,way ;</span><br><span class="line">    <span class="keyword">while</span> (~<span class="built_in">scanf</span>(<span class="string">"%d %d"</span>,&amp;num,&amp;way)) &#123;</span><br><span class="line">    stu stulist[<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">int</span> scores[<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">int</span> tags[<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;num;i++)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%s %d"</span>,stulist[i].name,&amp;stulist[i].score);</span><br><span class="line">        stulist[i].tag=(i+<span class="number">1</span>);</span><br><span class="line">        scores[i]=stulist[i].score;</span><br><span class="line">        tags[i]=i+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    quick_sort(scores,tags, <span class="number">0</span>, num<span class="number">-1</span>);</span><br><span class="line">    <span class="keyword">switch</span> (way) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=num<span class="number">-1</span>;j&gt;=<span class="number">0</span>;j--) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"%s %d\n"</span>,stulist[tags[j]<span class="number">-1</span>].name,scores[j]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;num;j++) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"%s %d\n"</span>,stulist[tags[j]<span class="number">-1</span>].name,scores[j]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/c-c/">c/c++</a> <a class="tag tag--primary tag--small t-link" href="/tags/python/">python</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/03/我们青春着，痛着，快乐着/" data-tooltip="我们青春着，痛着，快乐着" aria-label="下一篇: 我们青春着，痛着，快乐着">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/&amp;title=算法题:成绩排序" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Mr.chen. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/03/03/我们青春着，痛着，快乐着/" data-tooltip="我们青春着，痛着，快乐着" aria-label="下一篇: 我们青春着，痛着，快乐着">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/&amp;title=算法题:成绩排序" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/">
+                        <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/&amp;title=算法题:成绩排序">
+                        <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/">
+                        <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://i.loli.net/2018/12/19/5c19261e6111e.jpg" alt="作者的图片">
+        
+            <h4 id="about-card-name">Mr.chen</h4>
+        
+            <div id="about-card-bio"><p>less is more</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>当然是学生～～</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                湖北省武汉市武汉大学
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-times"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search" class="form-control input--large search-input" placeholder="Search ">
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">没有找到文章</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                            <img class="media-image" src="https://i.loli.net/2018/12/19/5c1a0aa2951c2.jpg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                            <h3 class="media-heading">定时发送jike脚本</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年12月18日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>Thanks for the <a href="https://github.com/Sorosliu1029/Jike-Metro" target="_blank" rel="noopener">Jike-Metro</a><br>对了 ，<code>即刻</code>是一个非常有趣的资讯-社交app</p>
+<hr></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/01/17/龙族/">
+                            <img class="media-image" src="https://ww1.sinaimg.cn/large/007rAy9hly1fz9p08ps9ij30rs0ix16m.jpg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/01/17/龙族/">
+                            <h3 class="media-heading">当我们在回忆过去时，我们究竟在回忆什么</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年1月17日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><h5 id="我们的《龙族》"><a href="#我们的《龙族》" class="headerlink" title="我们的《龙族》"></a>我们的《龙族》</h5><p>最近发现了一个很好的app<code>微信读书</code>,在里面偶然看到了新出的《龙族Ⅴ：悼亡者的归来》，丝毫不犹豫的就看了起来。其实我并不是一个很忠实的龙族粉丝。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/03/03/我们青春着，痛着，快乐着/">
+                            <img class="media-image" src="https://i.loli.net/2019/03/03/5c7af5ba9264d.jpg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/03/03/我们青春着，痛着，快乐着/">
+                            <h3 class="media-heading">我们青春着，痛着，快乐着</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年3月3日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><h6 id="起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。"><a href="#起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。" class="headerlink" title="起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。"></a>起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。</h6></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/">
+                            <h3 class="media-heading">算法题:成绩排序</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年4月2日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><h6 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h6><p>查找和排序<br></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
+                找到 4 篇文章
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('https://i.loli.net/2018/12/19/5c19d97918cf2.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-dbd16rvloemmuxdzniplmnxxvwoz24eya9wol0b7vvmlokgqsjivmb8dnscy.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('IZFB5246J9', 'b0d46810840379e9ee4cbe29fd7ade3f');
+        var algoliaIndex = algoliaClient.initIndex('search');
+    </script>
+
+
+    </body>
+</html>
