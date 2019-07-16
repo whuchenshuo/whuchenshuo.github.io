@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://www.skyjooy.cn/"/>
-  <updated>2019-07-16T17:46:39.237Z</updated>
+  <updated>2019-07-16T18:21:58.925Z</updated>
   <id>http://www.skyjooy.cn/</id>
   
   <author>
@@ -17,16 +17,22 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
+    <title>Qt以及其他知识部分总结</title>
     <link href="http://www.skyjooy.cn/2019/07/17/Qt%E4%BB%A5%E5%8F%8A%E5%85%B6%E4%BB%96%E7%9F%A5%E8%AF%86%E9%83%A8%E5%88%86%E6%80%BB%E7%BB%93/"/>
     <id>http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/</id>
-    <published>2019-07-16T17:30:33.581Z</published>
-    <updated>2019-07-16T17:46:39.237Z</updated>
+    <published>2019-07-16T18:15:00.000Z</published>
+    <updated>2019-07-16T18:21:58.925Z</updated>
     
     <summary type="html">
     
     </summary>
     
+      <category term="python" scheme="http://www.skyjooy.cn/categories/python/"/>
+    
+    
+      <category term="python" scheme="http://www.skyjooy.cn/tags/python/"/>
+    
+      <category term="记录" scheme="http://www.skyjooy.cn/tags/%E8%AE%B0%E5%BD%95/"/>
     
   </entry>
   
