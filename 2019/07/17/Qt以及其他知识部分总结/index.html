@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Skyjoy">
-    <title>定时发送jike脚本 - Skyjoy</title>
+    <title> - Skyjoy</title>
     <meta name="author" content="Mr.chen">
     
     
@@ -15,21 +15,15 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"},"articleBody":"Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app\n\n\n运行环境 Ubuntu 16.04.3  Python3.5依赖库 jike BeautifulSoup requests其他 linux crontab定时任务命令\n\n脚本的功能：每天晚上找一句话，并且道晚安当然是因为寂寞\n效果如图\n文字来源：句子网\n\n功能的实现分为三部分发送12345678import jikeimport juzi#借助于 Jike-Metro 可以很简单的发送动态#诸如评论，点赞等功能都可以实现#具体可以进入github进行查阅c = jike.JikeClient()result = juzi.get_text()hehe = c.create_my_post(result)\n获取发送内容1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import requestsfrom bs4 import BeautifulSoupimport timeimport redef make_url(finalpage):    url = 'https://www.juzimi.com/article/%E8%8F%9C%E6%A0%B9%E8%B0%AD?page=' + str(finalpage)    return url# make_url函数用于生成我们获取页面url，# 句子网特定文章每一页url就是在后面加上?page=num# 如果有selenium则可以实现自动搜索获取页面，不用在此处切换基础urldef get_html(url):    try:        headers = &#123;'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) '''                                 'Chrome/70.0.3538.110 Safari/537.36'&#125;        r = requests.get(url,timeout=30,headers=headers)        r.raise_for_status()        r.encoding = 'utf-8'        return r.text    except:        return 'ERROR'def get_text():    result = ''    results = []    pages,lines = get_pages_lines()    url = make_url(pages)    html = get_html(url)    soup = BeautifulSoup(html, 'lxml')    #title_raw = 'views-row-' + str(1)    text = soup.find_all('div', attrs=&#123;'class': re.compile('views-row views-row-' +str(lines))&#125;)# 利用正则表达式搜索class包含'views-row views-row-num'标签的元素# 即可定位到我们需要的内容    for div in text:        result = div.find(title='查看本句').text.strip()        #results.append(result)        if result:            break    return resultdef get_pages_lines():# 利用日期获得特定文章/作者的 页数和行数# 句子网默认一页有十个句子    temp = (time.strftime('%d/%m/%y')).split('/')[0]    temp = int(temp)    pages = (temp-1)//10    lines = temp % 10    if lines == 10:        lines += 10    return pages, lines\n定时发送的实现130 22 * * * cd /project/jike_goodnight;python3 file1.py\n\n友情链接：Linux crontab命令用法BeautifulSoup库官方中文文档一个收藏好句子的网站：句子迷\nBye \n","dateCreated":"2018-12-18T00:38:29+08:00","dateModified":"2019-07-17T01:45:11+08:00","datePublished":"2018-12-18T00:38:29+08:00","description":"Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app\n","headline":"定时发送jike脚本","image":["https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg","logo":{"@type":"ImageObject","url":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"}},"url":"http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/","keywords":"jike, python, linux","thumbnailUrl":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg"}</script>
-    <meta name="description" content="Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app">
-<meta name="keywords" content="jike,python,linux">
-<meta property="og:type" content="blog">
-<meta property="og:title" content="定时发送jike脚本">
-<meta property="og:url" content="http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/index.html">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"},"articleBody":"","dateCreated":"2019-07-17T01:30:33+08:00","dateModified":"2019-07-17T01:46:39+08:00","datePublished":"2019-07-17T01:30:33+08:00","description":"","headline":"","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg","logo":{"@type":"ImageObject","url":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"}},"url":"http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/"}</script>
+    <meta property="og:type" content="blog">
+<meta property="og:title" content="Skyjoy">
+<meta property="og:url" content="http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/index.html">
 <meta property="og:site_name" content="Skyjoy">
-<meta property="og:description" content="Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://i.loli.net/2018/12/19/5c19dc6dc7a4b.png">
-<meta property="og:updated_time" content="2019-07-16T17:45:11.434Z">
+<meta property="og:updated_time" content="2019-07-16T17:46:39.237Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="定时发送jike脚本">
-<meta name="twitter:description" content="Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app">
-<meta name="twitter:image" content="https://i.loli.net/2018/12/19/5c19dc6dc7a4b.png">
+<meta name="twitter:title" content="Skyjoy">
     
     
         
@@ -37,9 +31,6 @@
     
         <meta property="og:image" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"/>
     
-    
-        <meta property="og:image" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg"/>
-        <meta class="swiftype" name="image" data-type="enum" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg" />
     
     
     
@@ -177,25 +168,19 @@
 <article class="post">
     
     
-        <div class="post-header main-content-wrap text-center">
+        <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            定时发送jike脚本
+            (无标题)
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2018-12-18T00:38:29+08:00">
+    <time datetime="2019-07-17T01:30:33+08:00">
 	
-		    12月 18, 2018
+		    7月 17, 2019
     	
     </time>
-    
-        <span>发布在 </span>
-        
-    <a class="category-link" href="/categories/python脚本/">python脚本</a>
-
-
     
 </div>
 
@@ -205,34 +190,12 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Thanks for the <a href="https://github.com/Sorosliu1029/Jike-Metro" target="_blank" rel="noopener">Jike-Metro</a><br>对了 ，<code>即刻</code>是一个非常有趣的资讯-社交app</p>
-<hr>
-<a id="more"></a>
-<p>运行环境 Ubuntu 16.04.3  Python3.5<br>依赖库 jike BeautifulSoup requests<br>其他 linux crontab定时任务命令</p>
-<hr>
-<p>脚本的功能：每天晚上找一句话，并且道晚安<br><del>当然是因为寂寞</del></p>
-<h4 id="效果如图"><a href="#效果如图" class="headerlink" title="效果如图"></a>效果如图</h4><img src="https://i.loli.net/2018/12/19/5c19dc6dc7a4b.png" width="400" height="200">
-<p>文字来源：<a href="https://www.juzimi.com/" target="_blank" rel="noopener">句子网</a></p>
-<hr>
-<h5 id="功能的实现分为三部分"><a href="#功能的实现分为三部分" class="headerlink" title="功能的实现分为三部分"></a>功能的实现分为三部分</h5><h6 id="发送"><a href="#发送" class="headerlink" title="发送"></a>发送</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jike</span><br><span class="line"><span class="keyword">import</span> juzi</span><br><span class="line"><span class="comment">#借助于 Jike-Metro 可以很简单的发送动态</span></span><br><span class="line"><span class="comment">#诸如评论，点赞等功能都可以实现</span></span><br><span class="line"><span class="comment">#具体可以进入github进行查阅</span></span><br><span class="line">c = jike.JikeClient()</span><br><span class="line">result = juzi.get_text()</span><br><span class="line">hehe = c.create_my_post(result)</span><br></pre></td></tr></table></figure>
-<h6 id="获取发送内容"><a href="#获取发送内容" class="headerlink" title="获取发送内容"></a>获取发送内容</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_url</span><span class="params">(finalpage)</span>:</span></span><br><span class="line">    url = <span class="string">'https://www.juzimi.com/article/%E8%8F%9C%E6%A0%B9%E8%B0%AD?page='</span> + str(finalpage)</span><br><span class="line">    <span class="keyword">return</span> url</span><br><span class="line"><span class="comment"># make_url函数用于生成我们获取页面url，</span></span><br><span class="line"><span class="comment"># 句子网特定文章每一页url就是在后面加上?page=num</span></span><br><span class="line"><span class="comment"># 如果有selenium则可以实现自动搜索获取页面，不用在此处切换基础url</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_html</span><span class="params">(url)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) '</span><span class="string">''</span></span><br><span class="line">                                 <span class="string">'Chrome/70.0.3538.110 Safari/537.36'</span>&#125;</span><br><span class="line">        r = requests.get(url,timeout=<span class="number">30</span>,headers=headers)</span><br><span class="line">        r.raise_for_status()</span><br><span class="line">        r.encoding = <span class="string">'utf-8'</span></span><br><span class="line">        <span class="keyword">return</span> r.text</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'ERROR'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_text</span><span class="params">()</span>:</span></span><br><span class="line">    result = <span class="string">''</span></span><br><span class="line">    results = []</span><br><span class="line">    pages,lines = get_pages_lines()</span><br><span class="line">    url = make_url(pages)</span><br><span class="line">    html = get_html(url)</span><br><span class="line">    soup = BeautifulSoup(html, <span class="string">'lxml'</span>)</span><br><span class="line">    <span class="comment">#title_raw = 'views-row-' + str(1)</span></span><br><span class="line">    text = soup.find_all(<span class="string">'div'</span>, attrs=&#123;<span class="string">'class'</span>: re.compile(<span class="string">'views-row views-row-'</span> +str(lines))&#125;)</span><br><span class="line"><span class="comment"># 利用正则表达式搜索class包含'views-row views-row-num'标签的元素</span></span><br><span class="line"><span class="comment"># 即可定位到我们需要的内容</span></span><br><span class="line">    <span class="keyword">for</span> div <span class="keyword">in</span> text:</span><br><span class="line">        result = div.find(title=<span class="string">'查看本句'</span>).text.strip()</span><br><span class="line">        <span class="comment">#results.append(result)</span></span><br><span class="line">        <span class="keyword">if</span> result:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_pages_lines</span><span class="params">()</span>:</span></span><br><span class="line"><span class="comment"># 利用日期获得特定文章/作者的 页数和行数</span></span><br><span class="line"><span class="comment"># 句子网默认一页有十个句子</span></span><br><span class="line">    temp = (time.strftime(<span class="string">'%d/%m/%y'</span>)).split(<span class="string">'/'</span>)[<span class="number">0</span>]</span><br><span class="line">    temp = int(temp)</span><br><span class="line">    pages = (temp<span class="number">-1</span>)//<span class="number">10</span></span><br><span class="line">    lines = temp % <span class="number">10</span></span><br><span class="line">    <span class="keyword">if</span> lines == <span class="number">10</span>:</span><br><span class="line">        lines += <span class="number">10</span></span><br><span class="line">    <span class="keyword">return</span> pages, lines</span><br></pre></td></tr></table></figure>
-<h6 id="定时发送的实现"><a href="#定时发送的实现" class="headerlink" title="定时发送的实现"></a>定时发送的实现</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">30 22 * * * <span class="built_in">cd</span> /project/jike_goodnight;python3 file1.py</span><br></pre></td></tr></table></figure>
-<hr>
-<p>友情链接：<br><a href="http://www.runoob.com/linux/linux-comm-crontab.html" target="_blank" rel="noopener">Linux crontab命令用法</a><br><a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc.zh/" target="_blank" rel="noopener">BeautifulSoup库官方中文文档</a><br><a href="https://www.juzimi.com/" target="_blank" rel="noopener">一个收藏好句子的网站：句子迷</a></p>
-<p>Bye </p>
-
+            
             
 
         </div>
     </div>
     <div id="post-footer" class="post-footer main-content-wrap">
-        
-            <div class="post-footer-tags">
-                <span class="text-color-light text-small">标签</span><br>
-                
-    <a class="tag tag--primary tag--small t-link" href="/tags/jike/">jike</a> <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/python/">python</a>
-
-            </div>
         
         
             <div class="post-actions-wrap">
@@ -240,8 +203,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/17/龙族/" data-tooltip="当我们在回忆过去时，我们究竟在回忆什么" aria-label="上一篇: 当我们在回忆过去时，我们究竟在回忆什么">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -249,7 +211,8 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/11/模2除实现/" data-tooltip="模2除实现" aria-label="下一篇: 模2除实现">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -267,7 +230,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -275,7 +238,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/&amp;title=定时发送jike脚本" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/&amp;title=" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -283,7 +246,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -325,8 +288,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/17/龙族/" data-tooltip="当我们在回忆过去时，我们究竟在回忆什么" aria-label="上一篇: 当我们在回忆过去时，我们究竟在回忆什么">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -334,7 +296,8 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/11/模2除实现/" data-tooltip="模2除实现" aria-label="下一篇: 模2除实现">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -352,7 +315,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -360,7 +323,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/&amp;title=定时发送jike脚本" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/&amp;title=" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -368,7 +331,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -396,7 +359,7 @@
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/">
                         <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
                     </a>
                 </li>
@@ -404,7 +367,7 @@
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/&amp;title=定时发送jike脚本">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/&amp;title=">
                         <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
                     </a>
                 </li>
@@ -412,7 +375,7 @@
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/">
                         <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
                     </a>
                 </li>

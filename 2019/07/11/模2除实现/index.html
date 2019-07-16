@@ -15,7 +15,7 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://i.loli.net/2018/12/19/5c19261e6111e.jpg"},"articleBody":"做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个\n\n\n运行环境  Python3.5依赖库 无\n\n代码的功能：实现模2除\n具体代码如下str1为被除数，str2为被除数 返回结果为余数编写代码的原因是为了更好的进行FCS的验算1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import mathimport numpy as npstr1 = input('input:\\n')str2 = input('divide:\\n')#str1 = '11010110110000'#str2 = '10011'list1 = []list2 = []list_zero = []for i in str1:    i = int(i)    list1.append(i)for j in str2:    j = int(j)    list2.append(j)for k in list2:    list_zero.append(0)def sign(int1,int2):    if (int1-int2)==0:        return 0    else:        return 1def div(list1,list2):    list_temp1 = []    for i in range(len(list2)):        list_temp1.append(sign(list1[i],list2[i]))    return list_temp1def main():    list_temp = list1[0:len(list2)]    for i in range(len(list2),len(list1)):        if list_temp[0]==0:            list_temp = div(list_temp,list_zero)        else:            list_temp = div(list_temp,list2)        list_temp.append(list1[i])        list_temp.pop(0)    if list_temp[0]==0:        list_temp = div(list_temp,list_zero)    else:        list_temp = div(list_temp,list2)    list_temp.pop(0)    print('result: ',list_temp)main()\nbye 加油\n","dateCreated":"2019-07-11T23:50:00+08:00","dateModified":"2019-07-11T23:58:33+08:00","datePublished":"2019-07-11T23:50:00+08:00","description":"做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个\n","headline":"模2除实现","image":["https://i.loli.net/2019/07/11/5d275a6b3bce063429.png"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2019/07/11/模2除实现/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://i.loli.net/2018/12/19/5c19261e6111e.jpg","logo":{"@type":"ImageObject","url":"https://i.loli.net/2018/12/19/5c19261e6111e.jpg"}},"url":"http://www.skyjooy.cn/2019/07/11/模2除实现/","keywords":"python","thumbnailUrl":"https://i.loli.net/2019/07/11/5d275a6b3bce063429.png"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"},"articleBody":"做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个\n\n\n运行环境  Python3.5依赖库 无\n\n代码的功能：实现模2除\n具体代码如下str1为被除数，str2为被除数 返回结果为余数编写代码的原因是为了更好的进行FCS的验算1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import mathimport numpy as npstr1 = input('input:\\n')str2 = input('divide:\\n')#str1 = '11010110110000'#str2 = '10011'list1 = []list2 = []list_zero = []for i in str1:    i = int(i)    list1.append(i)for j in str2:    j = int(j)    list2.append(j)for k in list2:    list_zero.append(0)def sign(int1,int2):    if (int1-int2)==0:        return 0    else:        return 1def div(list1,list2):    list_temp1 = []    for i in range(len(list2)):        list_temp1.append(sign(list1[i],list2[i]))    return list_temp1def main():    list_temp = list1[0:len(list2)]    for i in range(len(list2),len(list1)):        if list_temp[0]==0:            list_temp = div(list_temp,list_zero)        else:            list_temp = div(list_temp,list2)        list_temp.append(list1[i])        list_temp.pop(0)    if list_temp[0]==0:        list_temp = div(list_temp,list_zero)    else:        list_temp = div(list_temp,list2)    list_temp.pop(0)    print('result: ',list_temp)main()\nbye 加油\n","dateCreated":"2019-07-11T23:50:00+08:00","dateModified":"2019-07-17T01:46:31+08:00","datePublished":"2019-07-11T23:50:00+08:00","description":"做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个\n","headline":"模2除实现","image":["https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/mo2chu.png"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2019/07/11/模2除实现/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg","logo":{"@type":"ImageObject","url":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"}},"url":"http://www.skyjooy.cn/2019/07/11/模2除实现/","keywords":"python","thumbnailUrl":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/mo2chu.png"}</script>
     <meta name="description" content="做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个">
 <meta name="keywords" content="python">
 <meta property="og:type" content="blog">
@@ -24,7 +24,7 @@
 <meta property="og:site_name" content="Skyjoy">
 <meta property="og:description" content="做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-11T15:58:33.509Z">
+<meta property="og:updated_time" content="2019-07-16T17:46:31.442Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="模2除实现">
 <meta name="twitter:description" content="做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个">
@@ -33,11 +33,11 @@
         
     
     
-        <meta property="og:image" content="https://i.loli.net/2018/12/19/5c19261e6111e.jpg"/>
+        <meta property="og:image" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"/>
     
     
-        <meta property="og:image" content="https://i.loli.net/2019/07/11/5d275a6b3bce063429.png"/>
-        <meta class="swiftype" name="image" data-type="enum" content="https://i.loli.net/2019/07/11/5d275a6b3bce063429.png" />
+        <meta property="og:image" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/mo2chu.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/mo2chu.png" />
     
     
     
@@ -82,7 +82,7 @@
         
             <div class="sidebar-profile">
                 <a href="/#about">
-                    <img class="sidebar-profile-picture" src="https://i.loli.net/2018/12/19/5c19261e6111e.jpg" alt="作者的图片">
+                    <img class="sidebar-profile-picture" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg" alt="作者的图片">
                 </a>
                 <h4 class="sidebar-profile-name">Mr.chen</h4>
                 
@@ -231,7 +231,8 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/17/Qt以及其他知识部分总结/" data-tooltip="(无标题)" aria-label="上一篇: (无标题)">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -316,7 +317,8 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/17/Qt以及其他知识部分总结/" data-tooltip="(无标题)" aria-label="上一篇: (无标题)">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -427,7 +429,7 @@
             <i class="fa fa-times"></i>
         </div>
         
-            <img id="about-card-picture" src="https://i.loli.net/2018/12/19/5c19261e6111e.jpg" alt="作者的图片">
+            <img id="about-card-picture" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg" alt="作者的图片">
         
             <h4 id="about-card-name">Mr.chen</h4>
         
@@ -474,7 +476,7 @@
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
-                            <img class="media-image" src="https://i.loli.net/2018/12/19/5c1a0aa2951c2.jpg" width="90" height="90">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg" width="90" height="90">
                         </a>
                     </div>
                     
@@ -550,7 +552,7 @@
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/">
-                            <img class="media-image" src="https://i.loli.net/2019/07/12/5d275d6fab26886459.png" width="90" height="90">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/chengjipaixu.png" width="90" height="90">
                         </a>
                     </div>
                     
@@ -575,7 +577,7 @@
                     
                     <div class="media-left">
                         <a class="link-unstyled" href="http://www.skyjooy.cn/2019/07/11/模2除实现/">
-                            <img class="media-image" src="https://i.loli.net/2019/07/11/5d275a6b3bce063429.png" width="90" height="90">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/mo2chu.png" width="90" height="90">
                         </a>
                     </div>
                     
@@ -597,11 +599,30 @@
                     <hr>
                 </div>
                 
+                <div class="media">
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/">
+                            <h3 class="media-heading"></h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年7月17日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
             </div>
         </div>
         <div class="modal-footer">
             <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
-                找到 5 篇文章
+                找到 6 篇文章
             </p>
         </div>
     </div>
@@ -609,7 +630,7 @@
 
         
         
-<div id="cover" style="background-image:url('https://i.loli.net/2018/12/19/5c19d97918cf2.jpg');"></div>
+<div id="cover" style="background-image:url('https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/5c19d97918cf2.jpg');"></div>
         <!--SCRIPTS-->
 <script src="/assets/js/script-dbd16rvloemmuxdzniplmnxxvwoz24eya9wol0b7vvmlokgqsjivmb8dnscy.min.js"></script>
 <!--SCRIPTS END-->
