@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Skyjoy">
+    <title>数据链路层学习笔记 - Skyjoy</title>
+    <meta name="author" content="Mr.chen">
+    
+    
+        <link rel="icon" href="http://www.skyjooy.cn/assets/images/icon.png">
+    
+    
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"},"articleBody":"什么是数据链路层，以及数据链路层的主要任务What is data link layer, and what’s the main task of the data link layer.\n链路 link 就是在通信时沿着通信路径相邻结点的通信信道。数据链路则为加上各种通信协议的链路。\n数据链路层主要任务之一就是保证数据在链路层传输时为透明传输（传输任意内容都不会发生错误。上层协议无需在意协议具体的操作过程，数据仿佛在黑盒里面传输）。\n\n1.1 举一个栗子举例来说数据链路层的其他作用以及透明传输的体现。我们把链路层的数据单位“帧”，想象成一个旅行的小朋友小明。小明先要从家中乘坐汽车到县城的火车站，然后搭乘火车从县城到天河机场，最后乘坐飞机到目的地。在旅行之前，小明就要带好自己的各种证件和行李，准备完成之后就要出发了，刚开始，一路上也有很多汽车，为了不与其他汽车发生事故，小明的司机需要听从红绿灯或者交通指示牌的指示行进。当然小明也可以乘汽车到任意位置，比如去超市再买一些零食之类。到达火车站上了火车之后，火车司机以及调度员需要确认铁路线路正常，继而发车。在铁轨上行进时由于在这段铁轨上只有小明这一趟火车，所以确认发车后小明无需等待红绿灯，要求之内任意通行就可以。到达飞机场，安检需要确认小明的身份，证明是小明，而且不是缺胳膊少腿的小明，并且小明的行李也不能超重，否则就不能带上飞机。在空中也不需要等红绿灯，最后小明到达了目的地。\n我们可以将这段过程分为两大类。一段是乘坐火车和飞机。因为这样的交通工具我们可以近似的看为行进路线上只有自己，所以无需协调与其他交通工具的关系。类似这种形式的链路称为点对点信道Point-To-Point。在普通家庭进行拨号连接上网时，大多都是基于 PPPoE（Point-to-Point Protocol Over Ethernet）协议，而此协议在其中封装集成了后面会介绍的点对点协议（Point to Point Protocol，PPP）。\n第二段是驾驶汽车，需要协调与其他车辆的关系避免发生碰撞事故，并且小明可以去到汽车能去的任意位置。类似这种形式的链路称为广播信道Broadcast Channel。在学校或者抽象说在局域网内进行通信时，需要协调与其他终端的通信，在同一条信道中如果不采取措施直接传输，那么信号就会发生碰撞失效。无论是后面将要介绍的信道划分协议，或者随机访问，轮询访问协议都是为了解决这个问题产生的。\n1.2 数据链路层的主要功能1.2.1 封装成帧在旅行之前，小明需要带上行李和证件变成旅行状态的小明。这就是链路层的成帧功能。数据链路层需要把网络层的数据包加上首部和尾部封装成数据帧。因为计算机网络体系封层结构的重要原因就是保证各层之间看起来要像是平行通信，所以无论是哪种网络层协议，数据链路层都要将其封装成统一的数据帧格式。不同数据链路层协议的首部和尾部都不尽相同，但是一定有一个任务就是确定帧的范围-帧定界，从何处开始到何处结束为一个帧。而传输的数据内容可能会和约定好的帧定界内容冲突，所以引出链路层的第二个功能。\n1.2.2 透明传输为了避免帧定界错误，链路层协议采用了如下几种方法。1.字符计数法字符计数法就是在帧头部使用计数字段表明帧内有多少字符。例如44637824658这段字符其实是两帧的内容。第一位 4 表明第一个帧有四个字符为 4463 ，然后的第一位 7 表明第二个帧有 7 个字符7824658。这种方法简单易错，只是了解。2.字符填充首尾定界法当传送由文本文件组成的帧时。SOH 与 EOT 用来表示帧的开始和结束。当文本内容中出现定界符就会发生错误。采用转义字符 ESC 插入数据部分中与定界符相同的字符，来区分定界符与数据部分偶然出现的与定界符一致的内容。例如网络层发送的数据 ADHFUASOHA，那么数据链路层就会填充为 SOHADHFUAESCSOHAEOT3.比特填充首位标志法比特填充法利用特定的比特序列0111110 来界定一帧的开始和结束。为了避免定界符错误，在数据比特流中如果出现5 个连续的 1 就在其后强制加入 0.\n1.2.3 差错控制小明到达机场后工作人员必须确认小明是正常的小明。对于数据来说就是没有产生差错的数据。介绍两种差错检验的方法。1.奇偶校验假设对于传输的 d 个数据比特0111000110101011 偶校验就是在其后加上一个附加比特，使得 这d+1 个比特中 1 的总数是偶数，奇校验就是成为奇数。但是如果数据比特发生偶数个比特错误就会发现这种校验方法失效。二维奇偶校验具有更好的性能，还具备一定的纠错能力，不过多介绍。2.循环冗余检测（Cyclic redundancy check ）这种方法稍微复杂一些，在了解这个方法之前需要了解一个基础知识就是模二除。这是一种算数方法，重点是不借位不进位。具体步骤如下：1.首先接收双方商定一个比特序列G，称为生成多项式。假设为 11012.假设发送数据为 M 总共有 k 位，具体假设 M为101001，此时 k=63.用 M 与 G 进行模二除运算得到余数为 R，这里得到的余数为 001（位数比 G 少一位）4.将余数 R 加到发送数据 M 之后，将为了检错而添加的冗余码称为帧检验序列（Frame Check Sequence   FCS）此时 FCS就是 R5.接收方收到数据后，如果用 M+R 与约定多项式 G 进行模二除法，没有余数则数据无误，否则数据产生错误\nCRC检测可在硬件中进行，所以速度非常快。经过检验之后的数据我们可以近似的认为凡是数据链路层接受的数据帧都没有错误，因为有错误的都被丢弃了。\n另有汉明（海明）编码（Hamming Code），可以对数据码进行纠错。主要原理就是建立校验码和数据码的线性关系，谢教材和 Computer Networking A Top-Down Approach都没有详细介绍，所以也不过多介绍。对于现在的互联网来说，差错控制已经非常先进，对于通信质量比较好的链路可靠交付往往通过上层来实现。而通信质量差的链路则通过数据链路层来实现\n1.3 点对点通信1.3.1 点对点协议PPPPPP 可用于用户到 ISP（Internet Service Provider）的通信，是使用串行线路通信的面向字节的协议，所有 PPP 协议的长度必定是字节的整数倍。PPP 协议有三个部分：第一就是封装 IP 数据报到串行链路的方法。第二就是链路控制协议 LCP（Link Control Protocol），用来建立、配置和测试数据链路连接的协议。第三就是网络控制协议 NCP（Network Control Protocol），为网络层协议建立和配置逻辑连接。PPP 协议的具体过程如下图PPP 协议虽然简单，但是已经不再是简单的链路层协议。NCP 协议部分可以给用户动态分配 IP地址。而且也可根据不同的网络层协议交换网络层特定的网络控制分组，使得 PPP 协议能够支持不同的网络层协议。PPP 有两种不同的实现透明传输的办法。当 PPP 使用异步传输时，就使用字节填充方法实现透明传输。而使用同步传输时，则使用比特填充方法，目的都是为了确定帧的结束。PPP 只支持全双工的点对点链路通信，不提供可靠传输，只能对数据进行差错检验（通过硬件实现 CRC校验）\n1.3.2 高级数据链路控制（High-level Data Link Control  HDLC）HDLC协议也是链路层协议，面向比特。在以前通信链路的质量不够好时，HDLC 因为能够提供可靠交付曾经非常流行，现在已经很少使用。HDLC 帧有三种，信息帧、监督帧以及无编号帧。通过对信息帧进行编号来实现可靠交付。HDLC 协议定义了主站、从站以及混合站，借此可以使用链路的非平衡配置和平衡配置。非平衡配置就是说主站控制整个链路的运行。平衡配置就是两个站可以平等的发起数据传输，不需要另一方的允许。HDLC 协议用比特填充法实现透明传输。\n1.4 广播信道我们在之前举了小明旅行的例子。在小明驾驶车辆的过程中需要协调与其他车辆的关系避免发生碰撞事故。从此引出数据链路层第二大类访问协议-随机接入协议，此类协议最重要的就是协调碰撞的处理\n1.4 媒体访问控制（Medium Access Control  MAC）层对于MAC 这个简称我觉得就有很多误解。首先Medium Access Control在计算机学科考研大纲中称为介质访问控制，谢希仁的教材中称为媒体接入控制。个人认为把 Medium 译为媒体还是更为合理一些的。因为 MAC 协议本质是协调多个节点的传输。第二点 MAC 地址和 MAC 协议常常没有区分太清。因为 MAC 地址和局域网也就是利用的广播信道的数据链路是不可分离的。只要在局域网中传输一定需要 MAC 地址，如同上网需要 IP 地址一样， 而 MAC 协议是控制局域网传输的必要条件。两个 MAC 其实本质不太相同所以 MAC 地址称为硬件地址或许更不会引起误解一些，而 MAC 则是数据链路层协议的一部分，一个子层。用于广播信道，协调节点随机接入。谢的教材中将 MAC 子层放在以太网中教学，初学会感觉 MAC 协议是以太网专属的一类协议。其实只是以太网使用了广播信道的技术，自然而然和 MAC 层结合到了一起。\n为了避免碰撞一般采用两类方法，第一类是静态划分信道方法，第二类是动态方法。  \n信道划分 媒体访问控制信道划分是一种静态方法，即可以想象成小明驾驶车辆分车道，或者分层（假如车能在空中飘浮着行驶）。一般来说有以下几种：1.FDM（频分多路复用）将带宽（这里指的带宽为通信意义上的带宽，即频率范围）划分为若干个子信道，各信道占据不同的频率，中间预留一部分的保护频带。2.TDM（时分多路复用）将时间分割开，后来衍生出了更科学的 STDM（统计时分多路复用）。主要原理都是规定一段时间间隔内只有一个结点可以发送信号，轮流分配时间给信号占用。3.WDM（波分多路复用）光纤中的方法，和 FDM 实质是一样的，只不过是划分不同波长的光信号4.CDM（码分多路复用）通过，共享频率和时间。举个栗子：小红运输红豆，小进运输绿豆，小退运输黄豆。他们没有办法只能将其放在一辆车中混着运输，但是因为可以分辨颜色所以不会产生混淆，到达目的地后再用工具将这几种不同颜色的豆子分开。CDMA （Code Division Multiple Access）码分多址是码分复用的一种技术，通过规定站点发送码片相互正交来避免干扰。这里牵扯到线性代数规格化内积的内容，不再介绍。因为这种技术抗干扰，保密性好，主要用于无线通信系统中。\n轮询 媒体访问控制轮询即轮流发送，典型的是令牌传递协议。是一种动态划分信道的方法。令牌在各个节点之中循环，如果需要发送信息则独占信道发送，发送完成之后将令牌传递出去。要注意的是令牌在设备之间的逻辑链路必须是一个环\n随机访问 媒体访问控制这部分内容是数据链路层的重点。局域网技术在计算机网络中的地位非常重要，而以太网技术则是目前应用最多的一种局域网技术（是的，以太网是一种技术，而不是一个网络的名字，可以_近似_认为 IEEE 820.3局域网简称为以太网。）。随机访问控制就是以太网技术中的重点。1.CSMA/CD 协议首先介绍以太网使用的 CSMA/CD 协议（Carrier Sense Multiple Access with Collision Detection，载波监听多点接入/碰撞检测）。看名称就可以发现其中的几个要点。第一个就是“多点接入”，CSMA/CD 协议使用与总线型网络，计算机以多点接入的形式连接到一起。第二个“载波监听”，意思是一边发送一边借助电子技术监听。每个站必须不停监听信道状况，及时发现信道是否空闲，或者是否发生碰撞。第三个“碰撞检测”就是不断监听碰撞，因为信号的传播需要时间，所以哪怕在信道空闲发送信号依然可能产生碰撞，因为别的计算机可能和你同时发送信号。在详细介绍CSMA/CD 协议之前需要明白一个定义，端到端时延，在后面的网络层这个概念也时分重要，即两倍的总线端到端信号传播时延，假设入线路长 1km，光信号在光纤中以光速传播，那么端到端时延τ即为 1000/(3x10^8)。\n\n协议的具体执行过程如下1.假设主机现在检测到信道空闲，开始发送数据。（数据传输速率是指的发送速率，而非传播速率，传播速率是接近光速的）2.如果开始发送数据的两倍端到端时延（最坏情况刚好到达目的地发生了碰撞）之后还未发生碰撞，那么就可以确定这这一帧数据发送成功。因此这段时间也叫做碰撞窗口期或者说争用期3.如果还未发送完毕就发生了碰撞，那么主机停止发送数据，接着发送一个 32 或者 48 比特的人为干扰信号。之后等待一个随机时间之后回到继续监听信道是否空闲的状态，空闲之后重传发生碰撞的帧。这个随机时间的确定算法名为截断二进制指数退避算法。算法规定了基本的退避时间为两倍的端到端时延 2τ，然后从（0,1,···,2^k-1）中选择一个整数倍乘上基本退避时间（争用期）。k 为重传数据帧的次数，k 上限为 10.也就是最坏的情况主机重发了 10 次还未成功而且需要等 1023 倍争用期的时间才能再次监听信道确定是否重传。如果发送 16 次还未成功则丢弃此帧向高层报告，说明同时发送数据的站点太多。为了让发送出去的帧基本上都是有效帧，帧长不能过短，否则在这一帧数据传输完毕还没有检测到已经发生了的碰撞，数据失效。在以太网中这个最短的帧长为 64Byte，如果传输数据小于64Byte 还要进行填充。如果链路中存在小于 64Byte 的帧那么一定是由于冲突破坏了的无效帧。\n以太网还规定了最小的帧间间隔 9.6 μs，以便清理缓存。非以太网，其他使用 CSMA/CD 协议网络中最小帧长的计算公式如下：最小帧长=2 倍端到端时延 x 数据传输率\n2.ALHOA 协议由于以太网的普及 ALHOA 协议使用已经较少。纯 ALHOA 简单来说就是想发就发，如果发生碰撞就等待随机时间重发。时隙 ALHOA就是把用户时间同步之后把时间分成时间片段，只能在时间片段内发送，减小了碰撞的几率，但是效率仍然不高。\n1.5 局域网技术为什么又要把局域网单独拿出来讲，因为局域网的知识点不仅仅在于以太网使用的 CSMA/CD 算法，还有局域网的发展，使用的其他一些协议也相当重要。\n局域网是指在一定的地理范围内由各种计算机设备通过连接介质连接起来的互联网络。主要特点是一般 为单位所有，办公室、学院等。局域网的通信质量较好，能进行广播和组播。\n1.5.2 MAC 地址MAC 地址，或者说物理地址，硬件地址，用来标志唯一的硬件设备。它是在数据链路层用来确定目标的重要标识。我们已知上网一定会有 IP 地址，那么已经有了 IP 地址为什么还需要 MAC地址。简单说来就是为了实现计算机网络的分层体系。而且 IP 地址是可以动态变化的。MAC 地址是一段设备被生产出来就确定了的一串标识符。如果在一个网段中出现了两个 MAC 地址一样的设备，那么他们都无法进行正常通信。推测目前校园网中限定上网设备数量就是通过检测记录 MAC 地址数量来确定的。插一句就是 MIUI11 中我们可以主动选择 隐藏真实MAC地址而采用动态随机地址，细节。\n1.5.1 以太网因为以太网技术在局域网中的统治地位，目前以太网已成为局域网的代名词。以太网的逻辑拓扑结构是总线型，物理结构为星型或者拓展星型。以前各种局域网技术互相竞争的时候，IEEE 为了保障通信制定了一系列的局域网标准规范。IEEE 802委员会把链路层分为了 LLC（Logical Link Control 逻辑链路控制） 和 MAC 子层。一个用来控制链路，一个用来控制接入媒体。到后来以太网取得市场地位后 LLC 子层已经失去了原有的作用，以至于现在很多网络适配器厂商在硬件上没有安装 LLC 协议而只有 MAC协议（适配器的作用是实现外部网络和计算机内部信号的通信，例如串行并行传输转换，缓存来不及传输的数据等）\n最早的时候以太网物理结构同样为总线型，后来集线器（hub）的出现改变了以太网的物理结构。集线器是物理层设备，同样拥有芯片，功能可以说是强化信号之后向所有结构继续发送，作用于比特而不是帧。于是出现了如图所示的星型结构。需要注意的是集线器只是简单的强化信号，所以以太网的帧数据同样经过以太网之后并没有实质区别，集线器并不能隔绝冲突域和广播域。而另一个设备交换机则可以隔绝冲突域，具有转发功能。开启了 VLAN（虚拟局域网）功能的交换机还可以隔绝广播域。\n以太网发展到现在已经超越了局域网的范围应用到城域网和广域网上面，PPPoE 就是一种将以太网技术结合 PPP 帧应用到宽带接入的实例。以太网的速度也越来越快。100BASE-T 使用双绞线的以太网可以发送 100Mb/s 的基带信号，既支持全双工模式，也支持办双工模式\n参考文献主要是谢希仁的《计算机网络》以及《Computer Networking A Top-Down Approach》 写的太烂了，以后再慢慢改吧。拜（四声）拜（轻声）\n","dateCreated":"2019-10-13T00:00:00+08:00","dateModified":"2019-10-13T12:04:35+08:00","datePublished":"2019-10-13T00:00:00+08:00","description":"什么是数据链路层，以及数据链路层的主要任务What is data link layer, and what’s the main task of the data link layer.","headline":"数据链路层学习笔记","image":["https://s2.ax1x.com/2019/10/13/ujXZon.th.png"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg","logo":{"@type":"ImageObject","url":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"}},"url":"http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/","keywords":"记录","thumbnailUrl":"https://s2.ax1x.com/2019/10/13/ujXZon.th.png"}</script>
+    <meta name="description" content="什么是数据链路层，以及数据链路层的主要任务What is data link layer, and what’s the main task of the data link layer.">
+<meta name="keywords" content="记录">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="数据链路层学习笔记">
+<meta property="og:url" content="http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/index.html">
+<meta property="og:site_name" content="Skyjoy">
+<meta property="og:description" content="什么是数据链路层，以及数据链路层的主要任务What is data link layer, and what’s the main task of the data link layer.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/whuchenshuo/whuchenshuo.github.io/master/images/mo2chu.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/12/uLOuSe.md.png">
+<meta property="og:image" content="https://s2.ax1x.com/2019/10/13/ujXZon.png">
+<meta property="og:updated_time" content="2019-10-13T04:04:35.739Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据链路层学习笔记">
+<meta name="twitter:description" content="什么是数据链路层，以及数据链路层的主要任务What is data link layer, and what’s the main task of the data link layer.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/whuchenshuo/whuchenshuo.github.io/master/images/mo2chu.png">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"/>
+    
+    
+        <meta property="og:image" content="https://s2.ax1x.com/2019/10/13/ujXZon.th.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://s2.ax1x.com/2019/10/13/ujXZon.th.png" />
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-c4ozcsklz4kht2pebhp44xorvyverh23toayhn7i6ubrpyedak24hv1v0hyd.min.css">
+    <!--STYLES END-->
+    
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+<header id="header" data-behavior="5">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Skyjoy</a>
+    </div>
+    
+        
+            <a class="header-right-icon open-algolia-search" href="#search">
+        
+        
+            <i class="fa fa-search fa-lg"></i>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="5">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg" alt="作者的图片">
+                </a>
+                <h4 class="sidebar-profile-name">Mr.chen</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>less is more</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/ " title="主页">
+                    
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">主页</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" title="分类">
+                    
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">分类</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" title="标签">
+                    
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">标签</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link open-algolia-search" href="#search" title="搜索">
+                    
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">搜索</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" title="关于">
+                    
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">关于</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="mailto:1336147573@qq.com" target="_blank" rel="noopener" title="邮箱">
+                    
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">邮箱</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="5"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            数据链路层学习笔记
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2019-10-13T00:00:00+08:00">
+	
+		    10月 13, 2019
+    	
+    </time>
+    
+        <span>发布在 </span>
+        
+    <a class="category-link" href="/categories/计算机网络/">计算机网络</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <h3 id="什么是数据链路层，以及数据链路层的主要任务"><a href="#什么是数据链路层，以及数据链路层的主要任务" class="headerlink" title="什么是数据链路层，以及数据链路层的主要任务"></a>什么是数据链路层，以及数据链路层的主要任务</h3><h4 id="What-is-data-link-layer-and-what’s-the-main-task-of-the-data-link-layer"><a href="#What-is-data-link-layer-and-what’s-the-main-task-of-the-data-link-layer" class="headerlink" title="What is data link layer, and what’s the main task of the data link layer."></a>What is data link layer, and what’s the main task of the data link layer.</h4><a id="more"></a>
+<p>链路 link 就是在通信时沿着通信路径相邻结点的通信信道。数据链路则为加上各种通信协议的链路。</p>
+<p>数据链路层主要任务之一就是保证数据在链路层传输时为<strong>透明传输</strong>（传输任意内容都不会发生错误。上层协议无需在意协议具体的操作过程，数据仿佛在黑盒里面传输）。</p>
+<hr>
+<h3 id="1-1-举一个栗子"><a href="#1-1-举一个栗子" class="headerlink" title="1.1 举一个栗子"></a>1.1 举一个栗子</h3><p>举例来说数据链路层的其他作用以及透明传输的体现。我们把链路层的数据单位“帧”，想象成一个旅行的小朋友小明。小明先要从家中乘坐汽车到县城的火车站，然后搭乘火车从县城到天河机场，最后乘坐飞机到目的地。在旅行之前，小明就要带好自己的各种证件和行李，准备完成之后就要出发了，刚开始，一路上也有很多汽车，为了不与其他汽车发生事故，小明的司机需要听从红绿灯或者交通指示牌的指示行进。当然小明也可以乘汽车到任意位置，比如去超市再买一些零食之类。到达火车站上了火车之后，火车司机以及调度员需要确认铁路线路正常，继而发车。在铁轨上行进时由于在这段铁轨上只有小明这一趟火车，所以确认发车后小明无需等待红绿灯，要求之内任意通行就可以。到达飞机场，安检需要确认小明的身份，证明是小明，而且不是缺胳膊少腿的小明，并且小明的行李也不能超重，否则就不能带上飞机。在空中也不需要等红绿灯，最后小明到达了目的地。</p>
+<p>我们可以将这段过程分为两大类。一段是乘坐火车和飞机。因为这样的交通工具我们可以<code>近似</code>的看为行进路线上只有自己，所以<strong>无需协调与其他交通工具的关系</strong>。类似这种形式的链路称为点对点信道Point-To-Point。在普通家庭进行拨号连接上网时，大多都是基于 PPPoE（Point-to-Point Protocol Over Ethernet）协议，而此协议在其中封装集成了后面会介绍的点对点协议（Point to Point Protocol，PPP）。</p>
+<p>第二段是驾驶汽车，需要<strong>协调与其他车辆的关系避免发生碰撞事故</strong>，并且小明可以去到汽车能去的任意位置。类似这种形式的链路称为广播信道Broadcast Channel。在学校或者抽象说在局域网内进行通信时，需要协调与其他终端的通信，在同一条信道中如果不采取措施直接传输，那么信号就会发生<strong>碰撞</strong>失效。无论是后面将要介绍的信道划分协议，或者随机访问，轮询访问协议都是为了解决这个问题产生的。</p>
+<h3 id="1-2-数据链路层的主要功能"><a href="#1-2-数据链路层的主要功能" class="headerlink" title="1.2 数据链路层的主要功能"></a>1.2 数据链路层的主要功能</h3><h5 id="1-2-1-封装成帧"><a href="#1-2-1-封装成帧" class="headerlink" title="1.2.1 封装成帧"></a>1.2.1 封装成帧</h5><p>在旅行之前，小明需要带上行李和证件变成旅行状态的小明。这就是链路层的成帧功能。数据链路层需要把网络层的数据包加上首部和尾部封装成<strong>数据帧</strong>。因为计算机网络体系封层结构的重要原因就是保证各层之间看起来要像是<strong>平行通信</strong>，所以无论是哪种网络层协议，数据链路层都要将其封装成统一的数据帧格式。<br>不同数据链路层协议的首部和尾部都不尽相同，但是一定有一个任务就是确定帧的范围-<strong>帧定界</strong>，从何处开始到何处结束为一个帧。而传输的数据内容可能会和约定好的帧定界内容冲突，所以引出链路层的第二个功能。</p>
+<h5 id="1-2-2-透明传输"><a href="#1-2-2-透明传输" class="headerlink" title="1.2.2 透明传输"></a>1.2.2 透明传输</h5><p>为了避免帧定界错误，链路层协议采用了如下几种方法。<br><code>1.字符计数法</code><br>字符计数法就是在帧头部使用计数字段表明帧内有多少字符。例如44637824658这段字符其实是两帧的内容。第一位 4 表明第一个帧有四个字符为 4463 ，然后的第一位 7 表明第二个帧有 7 个字符7824658。这种方法简单易错，只是了解。<br><code>2.字符填充首尾定界法</code><br>当传送由文本文件组成的帧时。SOH 与 EOT 用来表示帧的开始和结束。当文本内容中出现定界符就会发生错误。采用转义字符 ESC 插入数据部分中与定界符相同的字符，来区分定界符与数据部分偶然出现的与定界符一致的内容。<br>例如网络层发送的数据 ADHFUASOHA，那么数据链路层就会填充为 <del>SOH</del>ADHFUA<del>ESC</del>SOHA<del>EOT</del><br><code>3.比特填充首位标志法</code><br>比特填充法利用特定的比特序列0111110 来界定一帧的开始和结束。为了避免定界符错误，在数据比特流中如果出现5 个连续的 1 就在其后强制加入 0.</p>
+<h5 id="1-2-3-差错控制"><a href="#1-2-3-差错控制" class="headerlink" title="1.2.3 差错控制"></a>1.2.3 差错控制</h5><p>小明到达机场后工作人员必须确认小明是正常的小明。对于数据来说就是没有产生差错的数据。介绍两种差错检验的方法。<br><code>1.奇偶校验</code><br>假设对于传输的 d 个数据比特0111000110101011 偶校验就是在其后加上一个附加比特，使得 这d+1 个比特中 1 的总数是偶数，奇校验就是成为奇数。但是如果数据比特发生偶数个比特错误就会发现这种校验方法失效。二维奇偶校验具有更好的性能，还具备一定的纠错能力，不过多介绍。<br><code>2.循环冗余检测（Cyclic redundancy check ）</code><br>这种方法稍微复杂一些，在了解这个方法之前需要了解一个基础知识就是模二除。这是一种算数方法，重点是不借位不进位。<img src="https://raw.githubusercontent.com/whuchenshuo/whuchenshuo.github.io/master/images/mo2chu.png" alt=""><br>具体步骤如下：<br>1.首先接收双方商定一个比特序列G，称为生成多项式。假设为 1101<br>2.假设发送数据为 M 总共有 k 位，具体假设 M为101001，此时 k=6<br>3.用 M 与 G 进行模二除运算得到余数为 R，这里得到的余数为 001（位数比 G 少一位）<br>4.将余数 R 加到发送数据 M 之后，将为了检错而添加的冗余码称为帧检验序列（Frame Check Sequence   FCS）此时 FCS就是 R<br>5.接收方收到数据后，如果用 M+R 与约定多项式 G 进行模二除法，没有余数则数据无误，否则数据产生错误</p>
+<p>CRC检测可在硬件中进行，所以速度非常快。经过检验之后的数据我们可以近似的认为<strong>凡是数据链路层接受的数据帧都没有错误</strong>，因为有错误的都被丢弃了。</p>
+<p>另有汉明（海明）编码（Hamming Code），可以对数据码进行纠错。主要原理就是建立校验码和数据码的线性关系，谢教材和 Computer Networking A Top-Down Approach都没有详细介绍，所以也不过多介绍。<br>对于现在的互联网来说，差错控制已经非常先进，对于通信质量比较好的链路可靠交付往往通过上层来实现。而通信质量差的链路则通过数据链路层来实现</p>
+<h3 id="1-3-点对点通信"><a href="#1-3-点对点通信" class="headerlink" title="1.3 点对点通信"></a>1.3 点对点通信</h3><h5 id="1-3-1-点对点协议PPP"><a href="#1-3-1-点对点协议PPP" class="headerlink" title="1.3.1 点对点协议PPP"></a>1.3.1 点对点协议PPP</h5><p>PPP 可用于用户到 ISP（Internet Service Provider）的通信，是使用串行线路通信的面向字节的协议，所有 PPP 协议的长度必定是字节的整数倍。<br>PPP 协议有三个部分：第一就是封装 IP 数据报到串行链路的方法。第二就是链路控制协议 LCP（Link Control Protocol），用来建立、配置和测试数据链路连接的协议。第三就是网络控制协议 NCP（Network Control Protocol），为网络层协议建立和配置逻辑连接。<br>PPP 协议的具体过程如下图<br><img src="https://s2.ax1x.com/2019/10/12/uLOuSe.md.png" alt=""><br>PPP 协议虽然简单，但是已经不再是简单的链路层协议。NCP 协议部分可以给用户动态分配 IP地址。而且也可根据不同的网络层协议交换网络层特定的网络控制分组，使得 PPP 协议能够支持不同的网络层协议。<br>PPP 有两种不同的实现透明传输的办法。当 PPP 使用异步传输时，就使用字节填充方法实现透明传输。而使用同步传输时，则使用比特填充方法，目的都是为了确定帧的结束。<br>PPP 只支持全双工的点对点链路通信，不提供可靠传输，只能对数据进行差错检验（通过硬件实现 CRC校验）</p>
+<h5 id="1-3-2-高级数据链路控制（High-level-Data-Link-Control-HDLC）"><a href="#1-3-2-高级数据链路控制（High-level-Data-Link-Control-HDLC）" class="headerlink" title="1.3.2 高级数据链路控制（High-level Data Link Control  HDLC）"></a>1.3.2 高级数据链路控制（High-level Data Link Control  HDLC）</h5><p>HDLC协议也是链路层协议，面向比特。在以前通信链路的质量不够好时，HDLC 因为能够提供可靠交付曾经非常流行，现在已经很少使用。<br>HDLC 帧有三种，信息帧、监督帧以及无编号帧。通过对信息帧进行编号来实现可靠交付。<br>HDLC 协议定义了主站、从站以及混合站，借此可以使用链路的非平衡配置和平衡配置。非平衡配置就是说主站控制整个链路的运行。平衡配置就是两个站可以平等的发起数据传输，不需要另一方的允许。<br>HDLC 协议用比特填充法实现透明传输。</p>
+<h3 id="1-4-广播信道"><a href="#1-4-广播信道" class="headerlink" title="1.4 广播信道"></a>1.4 广播信道</h3><p>我们在之前举了小明旅行的例子。在小明驾驶车辆的过程中需要协调与其他车辆的关系避免发生碰撞事故。从此引出数据链路层第二大类访问协议-随机接入协议，此类协议最重要的就是协调<strong>碰撞</strong>的处理</p>
+<h5 id="1-4-媒体访问控制（Medium-Access-Control-MAC）层"><a href="#1-4-媒体访问控制（Medium-Access-Control-MAC）层" class="headerlink" title="1.4 媒体访问控制（Medium Access Control  MAC）层"></a>1.4 媒体访问控制（Medium Access Control  MAC）层</h5><p>对于MAC 这个简称我觉得就有很多误解。<br>首先Medium Access Control在计算机学科考研大纲中称为介质访问控制，谢希仁的教材中称为媒体接入控制。个人认为把 Medium 译为媒体还是更为合理一些的。因为 MAC 协议本质是协调多个节点的传输。<br>第二点 MAC 地址和 MAC 协议常常没有区分太清。因为 MAC 地址和局域网也就是利用的广播信道的数据链路是不可分离的。只要在局域网中传输一定需要 MAC 地址，如同上网需要 IP 地址一样， 而 MAC 协议是控制局域网传输的必要条件。两个 MAC 其实本质不太相同<br>所以 MAC 地址称为硬件地址或许更不会引起误解一些，而 MAC 则是数据链路层协议的一部分，一个子层。用于广播信道，协调节点随机接入。<br>谢的教材中将 MAC 子层放在以太网中教学，初学会感觉 MAC 协议是以太网专属的一类协议。其实只是以太网使用了广播信道的技术，自然而然和 MAC 层结合到了一起。</p>
+<p>为了避免碰撞一般采用两类方法，第一类是静态划分信道方法，第二类是动态方法。  </p>
+<h6 id="信道划分-媒体访问控制"><a href="#信道划分-媒体访问控制" class="headerlink" title="信道划分 媒体访问控制"></a>信道划分 媒体访问控制</h6><p>信道划分是一种静态方法，即可以想象成小明驾驶车辆分车道，或者分层（假如车能在空中飘浮着行驶）。一般来说有以下几种：<br>1.FDM（频分多路复用）将带宽（这里指的带宽为通信意义上的带宽，即频率范围）划分为若干个子信道，各信道占据不同的频率，中间预留一部分的保护频带。<br>2.TDM（时分多路复用）将时间分割开，后来衍生出了更科学的 STDM（统计时分多路复用）。主要原理都是规定一段时间间隔内只有一个结点可以发送信号，轮流分配时间给信号占用。<br>3.WDM（波分多路复用）光纤中的方法，和 FDM 实质是一样的，只不过是划分不同波长的光信号<br>4.CDM（码分多路复用）通过，共享频率和时间。举个栗子：小红运输红豆，小进运输绿豆，小退运输黄豆。他们没有办法只能将其放在一辆车中混着运输，但是因为可以分辨颜色所以不会产生混淆，到达目的地后再用工具将这几种不同颜色的豆子分开。CDMA （Code Division Multiple Access）码分多址是码分复用的一种技术，通过规定站点发送码片相互正交来避免干扰。这里牵扯到线性代数规格化内积的内容，不再介绍。因为这种技术抗干扰，保密性好，主要用于无线通信系统中。</p>
+<h6 id="轮询-媒体访问控制"><a href="#轮询-媒体访问控制" class="headerlink" title="轮询 媒体访问控制"></a>轮询 媒体访问控制</h6><p>轮询即轮流发送，典型的是令牌传递协议。是一种动态划分信道的方法。令牌在各个节点之中循环，如果需要发送信息则独占信道发送，发送完成之后将令牌传递出去。<br>要注意的是令牌在设备之间的逻辑链路必须是一个环</p>
+<h6 id="随机访问-媒体访问控制"><a href="#随机访问-媒体访问控制" class="headerlink" title="随机访问 媒体访问控制"></a>随机访问 媒体访问控制</h6><p>这部分内容是数据链路层的重点。局域网技术在计算机网络中的地位非常重要，而以太网技术则是目前应用最多的一种局域网技术（是的，以太网是一种技术，而不是一个网络的名字，可以_近似_认为 IEEE 820.3局域网简称为以太网。）。<strong>随机访问控制就是以太网技术中的重点</strong>。<br>1.CSMA/CD 协议<br>首先介绍以太网使用的 CSMA/CD 协议（Carrier Sense Multiple Access with Collision Detection，载波监听多点接入/碰撞检测）。<br>看名称就可以发现其中的几个要点。<br>第一个就是“多点接入”，CSMA/CD 协议使用与总线型网络，计算机以多点接入的形式连接到一起。<br>第二个“载波监听”，意思是一边发送一边借助电子技术监听。每个站必须不停监听信道状况，及时发现信道是否空闲，或者是否发生碰撞。<br>第三个“碰撞检测”就是不断监听碰撞，因为信号的传播需要时间，所以哪怕在信道空闲发送信号依然可能产生碰撞，因为别的计算机可能和你同时发送信号。<br>在详细介绍CSMA/CD 协议之前需要明白一个定义，<strong>端到端时延</strong>，在后面的网络层这个概念也时分重要，即两倍的总线端到端信号传播时延，假设入线路长 1km，光信号在光纤中以光速传播，那么端到端时延τ即为 1000/(3x10^8)。</p>
+<hr>
+<p>协议的具体执行过程如下<br>1.假设主机现在检测到信道空闲，开始发送数据。（数据传输速率是指的发送速率，而非传播速率，传播速率是接近光速的）<br>2.如果开始发送数据的两倍端到端时延（最坏情况刚好到达目的地发生了碰撞）之后还未发生碰撞，那么就可以确定这这一帧数据发送成功。因此这段时间也叫做<strong>碰撞窗口期</strong>或者说争用期<br>3.如果还未发送完毕就发生了碰撞，那么主机停止发送数据，接着发送一个 32 或者 48 比特的人为干扰信号。之后等待一个<strong>随机时间</strong>之后回到继续监听信道是否空闲的状态，空闲之后重传发生碰撞的帧。<br>这个随机时间的确定算法名为<em>截断二进制指数退避算法</em>。算法规定了基本的退避时间为两倍的端到端时延 2τ，然后从（0,1,···,2^k-1）中选择一个整数倍乘上基本退避时间（争用期）。k 为重传数据帧的次数，k 上限为 10.也就是最坏的情况主机重发了 10 次还未成功而且需要等 1023 倍争用期的时间才能再次监听信道确定是否重传。如果发送 16 次还未成功则丢弃此帧向高层报告，说明同时发送数据的站点太多。<br>为了让发送出去的帧基本上都是有效帧，帧长不能过短，否则在这一帧数据传输完毕还没有检测到已经发生了的碰撞，数据失效。在以太网中这个最短的帧长为 64Byte，如果传输数据小于64Byte 还要进行填充。如果链路中存在小于 64Byte 的帧那么一定是由于冲突破坏了的无效帧。</p>
+<p>以太网还规定了最小的帧间间隔 9.6 μs，以便清理缓存。非以太网，其他使用 CSMA/CD 协议网络中最小帧长的计算公式如下：<br>最小帧长=2 倍端到端时延 x 数据传输率</p>
+<p>2.ALHOA 协议<br>由于以太网的普及 ALHOA 协议使用已经较少。纯 ALHOA 简单来说就是想发就发，如果发生碰撞就等待随机时间重发。时隙 ALHOA就是把用户时间同步之后把时间分成时间片段，只能在时间片段内发送，减小了碰撞的几率，但是效率仍然不高。</p>
+<h3 id="1-5-局域网技术"><a href="#1-5-局域网技术" class="headerlink" title="1.5 局域网技术"></a>1.5 局域网技术</h3><p>为什么又要把局域网单独拿出来讲，因为局域网的知识点不仅仅在于以太网使用的 CSMA/CD 算法，还有局域网的发展，使用的其他一些协议也相当重要。</p>
+<p>局域网是指在一定的地理范围内由各种计算机设备通过连接介质连接起来的互联网络。主要特点是一般 为单位所有，办公室、学院等。局域网的通信质量较好，能进行广播和组播。</p>
+<h5 id="1-5-2-MAC-地址"><a href="#1-5-2-MAC-地址" class="headerlink" title="1.5.2 MAC 地址"></a>1.5.2 MAC 地址</h5><p>MAC 地址，或者说物理地址，硬件地址，用来标志唯一的硬件设备。它是在数据链路层用来确定目标的重要标识。<br>我们已知上网一定会有 IP 地址，那么已经有了 IP 地址为什么还需要 MAC地址。简单说来就是为了实现计算机网络的分层体系。而且 IP 地址是可以动态变化的。<br>MAC 地址是一段设备被生产出来就确定了的一串标识符。如果在一个网段中出现了两个 MAC 地址一样的设备，那么他们都无法进行正常通信。推测目前校园网中限定上网设备数量就是通过检测记录 MAC 地址数量来确定的。插一句就是 MIUI11 中我们可以主动选择 隐藏真实MAC地址而采用动态随机地址，细节。</p>
+<h5 id="1-5-1-以太网"><a href="#1-5-1-以太网" class="headerlink" title="1.5.1 以太网"></a>1.5.1 以太网</h5><p>因为以太网技术在局域网中的统治地位，目前以太网已成为局域网的代名词。<br>以太网的逻辑拓扑结构是总线型，物理结构为星型或者拓展星型。以前各种局域网技术互相竞争的时候，IEEE 为了保障通信制定了一系列的局域网标准规范。IEEE 802委员会把链路层分为了 LLC（Logical Link Control 逻辑链路控制） 和 MAC 子层。一个用来控制链路，一个用来控制接入媒体。到后来以太网取得市场地位后 LLC 子层已经失去了原有的作用，以至于现在很多网络适配器厂商在硬件上没有安装 LLC 协议而只有 MAC协议（适配器的作用是实现外部网络和计算机内部信号的通信，例如串行并行传输转换，缓存来不及传输的数据等）</p>
+<p>最早的时候以太网物理结构同样为总线型，后来集线器（hub）的出现改变了以太网的物理结构。集线器是物理层设备，同样拥有芯片，功能可以说是强化信号之后向所有结构继续发送，作用于比特而不是帧。于是出现了如图所示的星型结构。<br><img src="https://s2.ax1x.com/2019/10/13/ujXZon.png"><br>需要注意的是集线器只是简单的强化信号，所以以太网的帧数据同样经过以太网之后并没有实质区别，集线器并不能隔绝冲突域和广播域。而另一个设备交换机则可以隔绝冲突域，具有转发功能。开启了 VLAN（虚拟局域网）功能的交换机还可以隔绝广播域。</p>
+<p>以太网发展到现在已经超越了局域网的范围应用到城域网和广域网上面，PPPoE 就是一种将以太网技术结合 PPP 帧应用到宽带接入的实例。以太网的速度也越来越快。100BASE-T 使用双绞线的以太网可以发送 100Mb/s 的基带信号，既支持全双工模式，也支持办双工模式</p>
+<p>参考文献主要是谢希仁的《计算机网络》以及《Computer Networking A Top-Down Approach》 写的太烂了，以后再慢慢改吧。拜（四声）拜（轻声）</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">标签</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/记录/">记录</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/17/Qt以及其他知识部分总结/" data-tooltip="Qt以及其他知识部分总结" aria-label="下一篇: Qt以及其他知识部分总结">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/&amp;title=数据链路层学习笔记" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2019 Mr.chen. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/07/17/Qt以及其他知识部分总结/" data-tooltip="Qt以及其他知识部分总结" aria-label="下一篇: Qt以及其他知识部分总结">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Diesen Beitrag teilen">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/" title="分享到 Weibo">
+                    <i class="fab fa-weibo" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/&amp;title=数据链路层学习笔记" title="分享到 QQ">
+                    <i class="fab fa-qq" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/" title="分享到 Qzone">
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Nach oben">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/">
+                        <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/&amp;title=数据链路层学习笔记">
+                        <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/">
+                        <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
+
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg" alt="作者的图片">
+        
+            <h4 id="about-card-name">Mr.chen</h4>
+        
+            <div id="about-card-bio"><p>less is more</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>当然是学生～～</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                湖北省武汉市武汉大学
+            </div>
+        
+    </div>
+</div>
+
+        
+            <div id="algolia-search-modal" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <span class="close-button"><i class="fa fa-times"></i></span>
+            <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+                <span class="searchby-algolia-text text-color-light text-small">by</span>
+                <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+            </a>
+            <i class="search-icon fa fa-search"></i>
+            <form id="algolia-search-form">
+                <input type="text" id="algolia-search-input" name="search" class="form-control input--large search-input" placeholder="Search ">
+            </form>
+        </div>
+        <div class="modal-body">
+            <div class="no-result text-color-light text-center">没有找到文章</div>
+            <div class="results">
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                            <h3 class="media-heading">定时发送jike脚本</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2018年12月18日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>Thanks for the <a href="https://github.com/Sorosliu1029/Jike-Metro" target="_blank" rel="noopener">Jike-Metro</a><br>对了 ，<code>即刻</code>是一个非常有趣的资讯-社交app</p>
+<hr></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/01/17/龙族/">
+                            <img class="media-image" src="https://ww1.sinaimg.cn/large/007rAy9hly1fz9p08ps9ij30rs0ix16m.jpg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/01/17/龙族/">
+                            <h3 class="media-heading">当我们在回忆过去时，我们究竟在回忆什么</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年1月17日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><h5 id="我们的《龙族》"><a href="#我们的《龙族》" class="headerlink" title="我们的《龙族》"></a>我们的《龙族》</h5><p>最近发现了一个很好的app<code>微信读书</code>,在里面偶然看到了新出的《龙族Ⅴ：悼亡者的归来》，丝毫不犹豫的就看了起来。其实我并不是一个很忠实的龙族粉丝。</p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/03/03/我们青春着，痛着，快乐着/">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/womenqingchunzhe.jpg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/03/03/我们青春着，痛着，快乐着/">
+                            <h3 class="media-heading">我们青春着，痛着，快乐着</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年3月3日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><h6 id="起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。"><a href="#起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。" class="headerlink" title="起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。"></a>起了一个似乎很矫情的标题，像高中的时候，《青春美文》上那些似有似无飘渺又炽热的情感。</h6></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/chengjipaixu.png" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/04/02/算法题-成绩排序/">
+                            <h3 class="media-heading">算法题:成绩排序</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年4月2日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><h6 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h6><p>查找和排序<br></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/07/11/模2除实现/">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/mo2chu.png" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/07/11/模2除实现/">
+                            <h3 class="media-heading">模2除实现</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年7月11日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>做数据结构时遇到了模2除的问题，发现网络上并没有相关的代码，不算太难所以自己写了一个</p>
+<hr></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/">
+                            <img class="media-image" src="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/WechatIMG101.jpeg" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/07/17/Qt以及其他知识部分总结/">
+                            <h3 class="media-heading">Qt以及其他知识部分总结</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年7月17日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><p>这几天花了很多时间在python的ui处理上，收获了很多经验，也浪费了很多时间，写下这篇总结之后就安心学习了<br></p></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+                <div class="media">
+                    
+                    <div class="media-left">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/">
+                            <img class="media-image" src="https://s2.ax1x.com/2019/10/13/ujXZon.th.png" width="90" height="90">
+                        </a>
+                    </div>
+                    
+                    <div class="media-body">
+                        <a class="link-unstyled" href="http://www.skyjooy.cn/2019/10/13/数据链路层学习笔记/">
+                            <h3 class="media-heading">数据链路层学习笔记</h3>
+                        </a>
+                        <span class="media-meta">
+                            <span class="media-date text-small">
+                                
+                                    2019年10月13日
+                                
+                            </span>
+                        </span>
+                        <div class="media-content hide-xs font-merryweather"><h3 id="什么是数据链路层，以及数据链路层的主要任务"><a href="#什么是数据链路层，以及数据链路层的主要任务" class="headerlink" title="什么是数据链路层，以及数据链路层的主要任务"></a>什么是数据链路层，以及数据链路层的主要任务</h3><h4 id="What-is-data-link-layer-and-what’s-the-main-task-of-the-data-link-layer"><a href="#What-is-data-link-layer-and-what’s-the-main-task-of-the-data-link-layer" class="headerlink" title="What is data link layer, and what’s the main task of the data link layer."></a>What is data link layer, and what’s the main task of the data link layer.</h4></div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <hr>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <p class="results-count text-medium" data-message-zero="没有找到文章" data-message-one="找到 1 篇文章" data-message-other="找到 {n} 篇文章">
+                找到 7 篇文章
+            </p>
+        </div>
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('https://s2.ax1x.com/2019/10/13/ujvRsS.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-dbd16rvloemmuxdzniplmnxxvwoz24eya9wol0b7vvmlokgqsjivmb8dnscy.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment-with-locales.min.js"></script>
+    <script src="//cdn.jsdelivr.net/algoliasearch/3/algoliasearch.min.js"></script>
+    <script>
+        var algoliaClient = algoliasearch('IZFB5246J9', 'b0d46810840379e9ee4cbe29fd7ade3f');
+        var algoliaIndex = algoliaClient.initIndex('search');
+    </script>
+
+
+    </body>
+</html>
