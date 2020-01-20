@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Skyjoy">
-    <title>定时发送jike脚本 - Skyjoy</title>
+    <title>记考研之后的旅行 - Skyjoy</title>
     <meta name="author" content="Mr.chen">
     
     
@@ -15,21 +15,19 @@
     
         <link rel="alternate" type="application/atom+xml" title="RSS" href="/atom.xml">
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"},"articleBody":"Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app\n\n\n运行环境 Ubuntu 16.04.3  Python3.5依赖库 jike BeautifulSoup requests其他 linux crontab定时任务命令\n\n脚本的功能：每天晚上找一句话，并且道晚安当然是因为寂寞\n效果如图\n文字来源：句子网\n\n功能的实现分为三部分发送12345678import jikeimport juzi#借助于 Jike-Metro 可以很简单的发送动态#诸如评论，点赞等功能都可以实现#具体可以进入github进行查阅c = jike.JikeClient()result = juzi.get_text()hehe = c.create_my_post(result)\n获取发送内容1234567891011121314151617181920212223242526272829303132333435363738394041424344454647import requestsfrom bs4 import BeautifulSoupimport timeimport redef make_url(finalpage):    url = 'https://www.juzimi.com/article/%E8%8F%9C%E6%A0%B9%E8%B0%AD?page=' + str(finalpage)    return url# make_url函数用于生成我们获取页面url，# 句子网特定文章每一页url就是在后面加上?page=num# 如果有selenium则可以实现自动搜索获取页面，不用在此处切换基础urldef get_html(url):    try:        headers = &#123;'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) '''                                 'Chrome/70.0.3538.110 Safari/537.36'&#125;        r = requests.get(url,timeout=30,headers=headers)        r.raise_for_status()        r.encoding = 'utf-8'        return r.text    except:        return 'ERROR'def get_text():    result = ''    results = []    pages,lines = get_pages_lines()    url = make_url(pages)    html = get_html(url)    soup = BeautifulSoup(html, 'lxml')    #title_raw = 'views-row-' + str(1)    text = soup.find_all('div', attrs=&#123;'class': re.compile('views-row views-row-' +str(lines))&#125;)# 利用正则表达式搜索class包含'views-row views-row-num'标签的元素# 即可定位到我们需要的内容    for div in text:        result = div.find(title='查看本句').text.strip()        #results.append(result)        if result:            break    return resultdef get_pages_lines():# 利用日期获得特定文章/作者的 页数和行数# 句子网默认一页有十个句子    temp = (time.strftime('%d/%m/%y')).split('/')[0]    temp = int(temp)    pages = (temp-1)//10    lines = temp % 10    if lines == 10:        lines += 10    return pages, lines\n定时发送的实现130 22 * * * cd /project/jike_goodnight;python3 file1.py\n\n友情链接：Linux crontab命令用法BeautifulSoup库官方中文文档一个收藏好句子的网站：句子迷\nBye \n","dateCreated":"2018-12-18T00:38:29+08:00","dateModified":"2019-07-17T01:45:11+08:00","datePublished":"2018-12-18T00:38:29+08:00","description":"Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app\n","headline":"定时发送jike脚本","image":["https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg","logo":{"@type":"ImageObject","url":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"}},"url":"http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/","keywords":"jike, python, linux","thumbnailUrl":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg"}</script>
-    <meta name="description" content="Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app">
-<meta name="keywords" content="jike,python,linux">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"},"articleBody":"今天是2020年1月13日，考研对于个人来说似乎是风轻云淡，但是这种风轻云淡也使得自己缺乏了十足的动力。倘若今年考研失败大部分就是这种“不追求”所造成的，大概也需要自己好好检讨态度和目的追求。对于“玩”，每个人都有每个人不同的定义。至于旅行，家里人更喜欢用玩来称呼，对于我来说，是恶补人生经历的一种方式，在旅途中遇到的不同人和不同事情往往会促使我对这个社会产生更多不同于以往的反思。在去往北京之前我就想，作为一个从小在南方内陆长大的孩子，从没感受到那样干燥的空气。记忆中的冬天就是从头冷到脚的冷，虽然冷，但是鞋子还是因为汗气越穿越湿。而北京，相距武汉穿越好几个纬度的城市，中国的首都，政治经济文化中心，更多的，有着无数在北京献祭青春的年轻人。在没有亲眼看到之前，可能可以想象到那个城市的模样，却难以感受到城市的呼吸。我对于北京的印象，起源于郁达夫先生的文章《故都的秋》，悲凉和孤独。在长大之后对于国家命运前途开始更加关心，于是对于北京的印象更来源于1989年的政治风波，无数的年轻人出于或单纯或盲目的动机来到了广场争取了自以为心中的理想国。历史早已经过去，很难窥到当时事件的全貌，只是惋惜当时另走他路的优秀的年轻人和在暴虐中牺牲的官兵。从家里出发先行到了郑州，在去郑州之前看了记录片《城市记忆-郑州》。从片子里知道了郑州站是全国人流量最大的火车站，位居京广线和陇海线的交接处。因为交通的原因建国初期就将省会从开封换为了郑州，而郑州的棉纺产业一度位于全国第一，至今仍然保留着大量的棉纺厂社区，闻名遐迩的四厂烩面老板便是棉纺厂职工出身。到达郑州之后先行到了信工大的同学，听着他们的吐槽，老友之间的笑料，时间很快就过去了。不得不分享一个关于吴同志的故事。一日老吴衣冠不整在路上行走，纠察见面就问：“同志你是哪个单位的，证件出示一下”，老吴反口问道：“你认识我吗？”。纠察同志从未见过如此反映，一愣回答道：“不认识，怎么了”。未曾想老吴撒腿就跑，可是两条腿哪比得上人家开了小巡逻车的纠察，分分钟就抓住。教训之后让队领导领回去了，若能了解里面的严厉和纪律，就能知道此事实在是令人捧腹大笑。北方人喜爱牛羊，在郑州就已经体会到了。颇有大名的河南烩面精华不在面，而在面汤。老岳带我去吃的“萧记烩面”实属不错，20RMB一碗，白汤的羊肉味道非常浓，不太腥，充斥着羊肉固有的肉香味。吃完之后一段时间，唇齿留香，味蕾不停向大脑传输羊肉香味，好评。在郑州仅停留一天，很难去客观公正的评价这个城市，只能叙述个人印象以留之后自己回忆。郑州东站下车之后大概十五分钟地铁之后才到路面，于我而言对一个城市的第一印象往往是地铁设施。五号环线（可能有误）的地铁车厢很大很宽敞，行驶噪音也很正常，票据采用卡片形式，但是没有任何标志性的图案。车厢里有很多年轻人，有说河南话也有普通话的，另外就是每个城市都会见到的婆婆和媳妇一起带着孩童，聊着家里家常。公交到达信工大之后印象非常深刻，信工大所在的那片区域可能是一个规划全新的区域，四通八达直来直往双向八车道带栏杆以及人行道的马路，路上极少有垃圾。公交车上有USB充电口，后门下车处有一个STOP按钮，按下去之后司机处会不停响铃，老幼病残处涂了特殊颜色的座椅。去的时候天气正好，可以说天朗气清惠风和畅。这就是郑州带给我个人的第一印象，俨然一副蒸蒸日上的中原大都市。但是翌日来到一些老城区，例如二七纪念塔附近，凌乱不堪，商场几近关门，没有多少游客，路边响着家里县城会有的大喇叭广告。郑州的一大特色就是路上电动车极多，经常性的会抢占四轮机动车车道。电动车多的程度可能堪比在20世纪八九十年代的自行车大军。不可能不提到的就是棉纺厂社区了，作为以前的棉纺重镇郑州现在还有很多的类似社区。去的四厂社区已经被改造的很好，入口处有社区地图，主要道路平整。那天天气很好，路边的老人都出来晒太阳，听着其中一位聊着媳妇如何刻薄，自己尽心尽力还被嫌弃，免不了有些想笑。进去转了一下，担心私自拍摄人像引起老人不悦，所以相机从没有拿出来过，但是当时的那种市井气息是值得记忆的。我一直觉得在现代化的进程中，最熟悉城市记忆的莫过于这些老人，从他们的言语和眼神中你似乎能感受到一个个城市独有的味道。我最遗憾的就是现在这种味道正在逐渐的消失，现在的年轻人早已经不自知被浸染上了都市的气息，就如同中国大山深处一个一个正在消失的村庄一样，回忆也逐渐的流逝掉了。见往日旧友，是前往郑州的主要目的，其实时隔也就半年，所以往日的欢笑依旧，只是说再见的时候不免还是有些伤感，体制内外，时间一长，隔阂总会越来越深。那日晚上从郑州东前往北京西，一上车很明显的都是来自五湖四海的人，大家都说着普通话，细微之中总能听出方言的微微差异。坐在左边的可能小姐姐可能是京城某个大学的研究生，用着13款的MacBookair，还在努力的看着pdf和表格，用学生证购的票，精致淡雅的妆容恰到好处。右边的大哥不太像学生，发车时正好在拿switch准备玩游戏，发车的抖动让他把卡带全掉到地上找了半天，后来终于找到，玩起了类似怪物猎人的游戏。短短几天之内，我适应不了北京。北京是一个很复杂的城市，以至于我已经无法客观的去叙述这个城市。刚到的时候检票大叔浓重的京腔无时无刻不提醒着我已经到达了北京，但是下了出租车丰台区的“落后”却让我感觉似乎到了若干年前的古田路。这是北京吗？夜里凌晨一点，等了二十分钟四路夜车坐了将近一个小时到新市口（名字可能记错了）吃上了心心念念的卤煮。可能北方人习惯了敬称“您”，吃卤煮的大叔对我称呼“您”让我感到非常的不自在。一个人吃着卤煮，喝着北冰洋，听着一屋的北京爷们儿侃天侃地，那是一种奇妙的感觉。你离开了熟悉的环境，来到了一个完全陌生的地方，我渴望着去了解人世间运行的奥妙，有时候却感慨可能根本就没有什么规则，人大概都是遵循无规律运动。在北京遇到了很多意想不到的事情，我从没想过原来干冷不只是干而且真的很冷，心理和生理上的冷。原来王府井商圈旁边就是一簇矮小的平房，里面住着一些神秘的原住民。我也未曾想过路边遇到的牛肉饼小店的饼会这么好吃，一起排队的小孩子那么可爱。雨情跟我说在北京生活，如果感觉很累，某天在天桥上看看来往的车流，可能这就是来北京的意义。那天我在去白塔之光青旅的一个天桥上站了很久，站了很久很久，也想不到假如我时日飘到北京看着这车流会找到任何的意义。是的，我找不到北漂的意义。北京是个什么样的城市，我回想了一下，它只不过是位于北方的一个在国家发展进程中领先的大城市，京城的味道早就被首都磨的七零八落，难以寻找到踪影。不知道末代皇帝溥仪买票进入故宫时是一种什么样的感受，但是在我透过门缝窥探到故宫的破败之时，物是人非的感觉应该是相似的。在北京旅行的意义，大概是看到在凌冽北风里面拉着二胡的老大爷往他的帽中投入的几块钱，或是在地坛的大平面上感慨万千，或是在吃完夜宵的路上看到夜车里面咪睡着的代驾大哥，或是路上遇到没法坐公交的情侣给了他们零钱，听到那个女孩子悄咪咪的说“这个世界还是好人多”我真的很开心。在路上走的时候看到一个小巷子走了进去，遇到了骑自行车的老人。时间，历史，生活，相遇，这可能就是去北京旅行的意义。感恩世界和生活，愿世界和平。\n","dateCreated":"2020-01-20T15:23:13+08:00","dateModified":"2020-01-20T15:35:20+08:00","datePublished":"2020-01-20T15:23:13+08:00","description":"今天是2020年1月13日，考研对于个人来说似乎是风轻云淡，但是这种风轻云淡也使得自己缺乏了十足的动力。","headline":"记考研之后的旅行","image":["https://s2.ax1x.com/2020/01/20/1ikCaq.md.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/"},"publisher":{"@type":"Organization","name":"Mr.chen","sameAs":["https://github.com/","mailto:1336147573@qq.com"],"image":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg","logo":{"@type":"ImageObject","url":"https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"}},"url":"http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/","keywords":"回忆, 随笔","thumbnailUrl":"https://s2.ax1x.com/2020/01/20/1ikCaq.md.jpg"}</script>
+    <meta name="description" content="今天是2020年1月13日，考研对于个人来说似乎是风轻云淡，但是这种风轻云淡也使得自己缺乏了十足的动力。">
+<meta name="keywords" content="回忆,随笔">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="定时发送jike脚本">
-<meta property="og:url" content="http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/index.html">
+<meta property="og:title" content="记考研之后的旅行">
+<meta property="og:url" content="http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/index.html">
 <meta property="og:site_name" content="Skyjoy">
-<meta property="og:description" content="Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app">
+<meta property="og:description" content="今天是2020年1月13日，考研对于个人来说似乎是风轻云淡，但是这种风轻云淡也使得自己缺乏了十足的动力。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://i.loli.net/2018/12/19/5c19dc6dc7a4b.png">
-<meta property="og:updated_time" content="2019-07-16T17:45:11.434Z">
+<meta property="og:updated_time" content="2020-01-20T07:35:20.563Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="定时发送jike脚本">
-<meta name="twitter:description" content="Thanks for the Jike-Metro对了 ，即刻是一个非常有趣的资讯-社交app">
-<meta name="twitter:image" content="https://i.loli.net/2018/12/19/5c19dc6dc7a4b.png">
+<meta name="twitter:title" content="记考研之后的旅行">
+<meta name="twitter:description" content="今天是2020年1月13日，考研对于个人来说似乎是风轻云淡，但是这种风轻云淡也使得自己缺乏了十足的动力。">
     
     
         
@@ -38,8 +36,8 @@
         <meta property="og:image" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/cat.jpg"/>
     
     
-        <meta property="og:image" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg"/>
-        <meta class="swiftype" name="image" data-type="enum" content="https://github.com/whuchenshuo/whuchenshuo.github.io/raw/master/images/dingshifasongjike.jpg" />
+        <meta property="og:image" content="https://s2.ax1x.com/2020/01/20/1ikCaq.md.jpg"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://s2.ax1x.com/2020/01/20/1ikCaq.md.jpg" />
     
     
     
@@ -177,23 +175,23 @@
 <article class="post">
     
     
-        <div class="post-header main-content-wrap text-center">
+        <div class="post-header main-content-wrap text-left">
     
         <h1 class="post-title">
-            定时发送jike脚本
+            记考研之后的旅行
         </h1>
     
     
         <div class="post-meta">
-    <time datetime="2018-12-18T00:38:29+08:00">
+    <time datetime="2020-01-20T15:23:13+08:00">
 	
-		    12月 18, 2018
+		    1月 20, 2020
     	
     </time>
     
         <span>发布在 </span>
         
-    <a class="category-link" href="/categories/python脚本/">python脚本</a>
+    <a class="category-link" href="/categories/随笔/">随笔</a>
 
 
     
@@ -205,21 +203,7 @@
     
     <div class="post-content markdown">
         <div class="main-content-wrap">
-            <p>Thanks for the <a href="https://github.com/Sorosliu1029/Jike-Metro" target="_blank" rel="noopener">Jike-Metro</a><br>对了 ，<code>即刻</code>是一个非常有趣的资讯-社交app</p>
-<hr>
-<a id="more"></a>
-<p>运行环境 Ubuntu 16.04.3  Python3.5<br>依赖库 jike BeautifulSoup requests<br>其他 linux crontab定时任务命令</p>
-<hr>
-<p>脚本的功能：每天晚上找一句话，并且道晚安<br><del>当然是因为寂寞</del></p>
-<h4 id="效果如图"><a href="#效果如图" class="headerlink" title="效果如图"></a>效果如图</h4><img src="https://i.loli.net/2018/12/19/5c19dc6dc7a4b.png" width="400" height="200">
-<p>文字来源：<a href="https://www.juzimi.com/" target="_blank" rel="noopener">句子网</a></p>
-<hr>
-<h5 id="功能的实现分为三部分"><a href="#功能的实现分为三部分" class="headerlink" title="功能的实现分为三部分"></a>功能的实现分为三部分</h5><h6 id="发送"><a href="#发送" class="headerlink" title="发送"></a>发送</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jike</span><br><span class="line"><span class="keyword">import</span> juzi</span><br><span class="line"><span class="comment">#借助于 Jike-Metro 可以很简单的发送动态</span></span><br><span class="line"><span class="comment">#诸如评论，点赞等功能都可以实现</span></span><br><span class="line"><span class="comment">#具体可以进入github进行查阅</span></span><br><span class="line">c = jike.JikeClient()</span><br><span class="line">result = juzi.get_text()</span><br><span class="line">hehe = c.create_my_post(result)</span><br></pre></td></tr></table></figure>
-<h6 id="获取发送内容"><a href="#获取发送内容" class="headerlink" title="获取发送内容"></a>获取发送内容</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_url</span><span class="params">(finalpage)</span>:</span></span><br><span class="line">    url = <span class="string">'https://www.juzimi.com/article/%E8%8F%9C%E6%A0%B9%E8%B0%AD?page='</span> + str(finalpage)</span><br><span class="line">    <span class="keyword">return</span> url</span><br><span class="line"><span class="comment"># make_url函数用于生成我们获取页面url，</span></span><br><span class="line"><span class="comment"># 句子网特定文章每一页url就是在后面加上?page=num</span></span><br><span class="line"><span class="comment"># 如果有selenium则可以实现自动搜索获取页面，不用在此处切换基础url</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_html</span><span class="params">(url)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        headers = &#123;<span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) '</span><span class="string">''</span></span><br><span class="line">                                 <span class="string">'Chrome/70.0.3538.110 Safari/537.36'</span>&#125;</span><br><span class="line">        r = requests.get(url,timeout=<span class="number">30</span>,headers=headers)</span><br><span class="line">        r.raise_for_status()</span><br><span class="line">        r.encoding = <span class="string">'utf-8'</span></span><br><span class="line">        <span class="keyword">return</span> r.text</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'ERROR'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_text</span><span class="params">()</span>:</span></span><br><span class="line">    result = <span class="string">''</span></span><br><span class="line">    results = []</span><br><span class="line">    pages,lines = get_pages_lines()</span><br><span class="line">    url = make_url(pages)</span><br><span class="line">    html = get_html(url)</span><br><span class="line">    soup = BeautifulSoup(html, <span class="string">'lxml'</span>)</span><br><span class="line">    <span class="comment">#title_raw = 'views-row-' + str(1)</span></span><br><span class="line">    text = soup.find_all(<span class="string">'div'</span>, attrs=&#123;<span class="string">'class'</span>: re.compile(<span class="string">'views-row views-row-'</span> +str(lines))&#125;)</span><br><span class="line"><span class="comment"># 利用正则表达式搜索class包含'views-row views-row-num'标签的元素</span></span><br><span class="line"><span class="comment"># 即可定位到我们需要的内容</span></span><br><span class="line">    <span class="keyword">for</span> div <span class="keyword">in</span> text:</span><br><span class="line">        result = div.find(title=<span class="string">'查看本句'</span>).text.strip()</span><br><span class="line">        <span class="comment">#results.append(result)</span></span><br><span class="line">        <span class="keyword">if</span> result:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_pages_lines</span><span class="params">()</span>:</span></span><br><span class="line"><span class="comment"># 利用日期获得特定文章/作者的 页数和行数</span></span><br><span class="line"><span class="comment"># 句子网默认一页有十个句子</span></span><br><span class="line">    temp = (time.strftime(<span class="string">'%d/%m/%y'</span>)).split(<span class="string">'/'</span>)[<span class="number">0</span>]</span><br><span class="line">    temp = int(temp)</span><br><span class="line">    pages = (temp<span class="number">-1</span>)//<span class="number">10</span></span><br><span class="line">    lines = temp % <span class="number">10</span></span><br><span class="line">    <span class="keyword">if</span> lines == <span class="number">10</span>:</span><br><span class="line">        lines += <span class="number">10</span></span><br><span class="line">    <span class="keyword">return</span> pages, lines</span><br></pre></td></tr></table></figure>
-<h6 id="定时发送的实现"><a href="#定时发送的实现" class="headerlink" title="定时发送的实现"></a>定时发送的实现</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">30 22 * * * <span class="built_in">cd</span> /project/jike_goodnight;python3 file1.py</span><br></pre></td></tr></table></figure>
-<hr>
-<p>友情链接：<br><a href="http://www.runoob.com/linux/linux-comm-crontab.html" target="_blank" rel="noopener">Linux crontab命令用法</a><br><a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc.zh/" target="_blank" rel="noopener">BeautifulSoup库官方中文文档</a><br><a href="https://www.juzimi.com/" target="_blank" rel="noopener">一个收藏好句子的网站：句子迷</a></p>
-<p>Bye </p>
+            <p>今天是2020年1月13日，考研对于个人来说似乎是风轻云淡，但是这种风轻云淡也使得自己缺乏了十足的动力。<a id="more"></a><br>倘若今年考研失败大部分就是这种“不追求”所造成的，大概也需要自己好好检讨态度和目的追求。<br>对于“玩”，每个人都有每个人不同的定义。至于旅行，家里人更喜欢用玩来称呼，对于我来说，是恶补人生经历的一种方式，在旅途中遇到的不同人和不同事情往往会促使我对这个社会产生更多不同于以往的反思。<br>在去往北京之前我就想，作为一个从小在南方内陆长大的孩子，从没感受到那样干燥的空气。记忆中的冬天就是从头冷到脚的冷，虽然冷，但是鞋子还是因为汗气越穿越湿。而北京，相距武汉穿越好几个纬度的城市，中国的首都，政治经济文化中心，更多的，有着无数在北京献祭青春的年轻人。在没有亲眼看到之前，可能可以想象到那个城市的模样，却难以感受到城市的呼吸。<br>我对于北京的印象，起源于郁达夫先生的文章《故都的秋》，悲凉和孤独。在长大之后对于国家命运前途开始更加关心，于是对于北京的印象更来源于1989年的政治风波，无数的年轻人出于或单纯或盲目的动机来到了广场争取了自以为心中的理想国。历史早已经过去，很难窥到当时事件的全貌，只是惋惜当时另走他路的优秀的年轻人和在暴虐中牺牲的官兵。<br>从家里出发先行到了郑州，在去郑州之前看了记录片《城市记忆-郑州》。从片子里知道了郑州站是全国人流量最大的火车站，位居京广线和陇海线的交接处。因为交通的原因建国初期就将省会从开封换为了郑州，而郑州的棉纺产业一度位于全国第一，至今仍然保留着大量的棉纺厂社区，闻名遐迩的四厂烩面老板便是棉纺厂职工出身。到达郑州之后先行到了信工大的同学，听着他们的吐槽，老友之间的笑料，时间很快就过去了。<br>不得不分享一个关于吴同志的故事。一日老吴衣冠不整在路上行走，纠察见面就问：“同志你是哪个单位的，证件出示一下”，老吴反口问道：“你认识我吗？”。纠察同志从未见过如此反映，一愣回答道：“不认识，怎么了”。未曾想老吴撒腿就跑，可是两条腿哪比得上人家开了小巡逻车的纠察，分分钟就抓住。教训之后让队领导领回去了，若能了解里面的严厉和纪律，就能知道此事实在是令人捧腹大笑。<br>北方人喜爱牛羊，在郑州就已经体会到了。颇有大名的河南烩面精华不在面，而在面汤。老岳带我去吃的“萧记烩面”实属不错，20RMB一碗，白汤的羊肉味道非常浓，不太腥，充斥着羊肉固有的肉香味。吃完之后一段时间，唇齿留香，味蕾不停向大脑传输羊肉香味，好评。<br>在郑州仅停留一天，很难去客观公正的评价这个城市，只能叙述个人印象以留之后自己回忆。郑州东站下车之后大概十五分钟地铁之后才到路面，于我而言对一个城市的第一印象往往是地铁设施。五号环线（可能有误）的地铁车厢很大很宽敞，行驶噪音也很正常，票据采用卡片形式，但是没有任何标志性的图案。车厢里有很多年轻人，有说河南话也有普通话的，另外就是每个城市都会见到的婆婆和媳妇一起带着孩童，聊着家里家常。公交到达信工大之后印象非常深刻，信工大所在的那片区域可能是一个规划全新的区域，四通八达直来直往双向八车道带栏杆以及人行道的马路，路上极少有垃圾。公交车上有USB充电口，后门下车处有一个STOP按钮，按下去之后司机处会不停响铃，老幼病残处涂了特殊颜色的座椅。去的时候天气正好，可以说天朗气清惠风和畅。这就是郑州带给我个人的第一印象，俨然一副蒸蒸日上的中原大都市。但是翌日来到一些老城区，例如二七纪念塔附近，凌乱不堪，商场几近关门，没有多少游客，路边响着家里县城会有的大喇叭广告。郑州的一大特色就是路上电动车极多，经常性的会抢占四轮机动车车道。电动车多的程度可能堪比在20世纪八九十年代的自行车大军。<br>不可能不提到的就是棉纺厂社区了，作为以前的棉纺重镇郑州现在还有很多的类似社区。去的四厂社区已经被改造的很好，入口处有社区地图，主要道路平整。那天天气很好，路边的老人都出来晒太阳，听着其中一位聊着媳妇如何刻薄，自己尽心尽力还被嫌弃，免不了有些想笑。进去转了一下，担心私自拍摄人像引起老人不悦，所以相机从没有拿出来过，但是当时的那种市井气息是值得记忆的。我一直觉得在现代化的进程中，最熟悉城市记忆的莫过于这些老人，从他们的言语和眼神中你似乎能感受到一个个城市独有的味道。我最遗憾的就是现在这种味道正在逐渐的消失，现在的年轻人早已经不自知被浸染上了都市的气息，就如同中国大山深处一个一个正在消失的村庄一样，回忆也逐渐的流逝掉了。<br>见往日旧友，是前往郑州的主要目的，其实时隔也就半年，所以往日的欢笑依旧，只是说再见的时候不免还是有些伤感，体制内外，时间一长，隔阂总会越来越深。<br>那日晚上从郑州东前往北京西，一上车很明显的都是来自五湖四海的人，大家都说着普通话，细微之中总能听出方言的微微差异。坐在左边的可能小姐姐可能是京城某个大学的研究生，用着13款的MacBookair，还在努力的看着pdf和表格，用学生证购的票，精致淡雅的妆容恰到好处。右边的大哥不太像学生，发车时正好在拿switch准备玩游戏，发车的抖动让他把卡带全掉到地上找了半天，后来终于找到，玩起了类似怪物猎人的游戏。<br>短短几天之内，我适应不了北京。<br>北京是一个很复杂的城市，以至于我已经无法客观的去叙述这个城市。刚到的时候检票大叔浓重的京腔无时无刻不提醒着我已经到达了北京，但是下了出租车丰台区的“落后”却让我感觉似乎到了若干年前的古田路。这是北京吗？夜里凌晨一点，等了二十分钟四路夜车坐了将近一个小时到新市口（名字可能记错了）吃上了心心念念的卤煮。可能北方人习惯了敬称“您”，吃卤煮的大叔对我称呼“您”让我感到非常的不自在。<br>一个人吃着卤煮，喝着北冰洋，听着一屋的北京爷们儿侃天侃地，那是一种奇妙的感觉。你离开了熟悉的环境，来到了一个完全陌生的地方，我渴望着去了解人世间运行的奥妙，有时候却感慨可能根本就没有什么规则，人大概都是遵循无规律运动。<br>在北京遇到了很多意想不到的事情，我从没想过原来干冷不只是干而且真的很冷，心理和生理上的冷。原来王府井商圈旁边就是一簇矮小的平房，里面住着一些神秘的原住民。我也未曾想过路边遇到的牛肉饼小店的饼会这么好吃，一起排队的小孩子那么可爱。<br>雨情跟我说在北京生活，如果感觉很累，某天在天桥上看看来往的车流，可能这就是来北京的意义。那天我在去白塔之光青旅的一个天桥上站了很久，站了很久很久，也想不到假如我时日飘到北京看着这车流会找到任何的意义。是的，我找不到北漂的意义。<br>北京是个什么样的城市，我回想了一下，它只不过是位于北方的一个在国家发展进程中领先的大城市，京城的味道早就被首都磨的七零八落，难以寻找到踪影。不知道末代皇帝溥仪买票进入故宫时是一种什么样的感受，但是在我透过门缝窥探到故宫的破败之时，物是人非的感觉应该是相似的。<br>在北京旅行的意义，大概是看到在凌冽北风里面拉着二胡的老大爷往他的帽中投入的几块钱，或是在地坛的大平面上感慨万千，或是在吃完夜宵的路上看到夜车里面咪睡着的代驾大哥，或是路上遇到没法坐公交的情侣给了他们零钱，听到那个女孩子悄咪咪的说“这个世界还是好人多”我真的很开心。在路上走的时候看到一个小巷子走了进去，遇到了骑自行车的老人。<br>时间，历史，生活，相遇，这可能就是去北京旅行的意义。<br>感恩世界和生活，愿世界和平。</p>
 
             
 
@@ -230,7 +214,7 @@
             <div class="post-footer-tags">
                 <span class="text-color-light text-small">标签</span><br>
                 
-    <a class="tag tag--primary tag--small t-link" href="/tags/jike/">jike</a> <a class="tag tag--primary tag--small t-link" href="/tags/linux/">linux</a> <a class="tag tag--primary tag--small t-link" href="/tags/python/">python</a>
+    <a class="tag tag--primary tag--small t-link" href="/tags/回忆/">回忆</a> <a class="tag tag--primary tag--small t-link" href="/tags/随笔/">随笔</a>
 
             </div>
         
@@ -240,8 +224,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/17/龙族/" data-tooltip="当我们在回忆过去时，我们究竟在回忆什么" aria-label="上一篇: 当我们在回忆过去时，我们究竟在回忆什么">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -249,7 +232,8 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/10/13/数据链路层学习笔记/" data-tooltip="数据链路层学习笔记" aria-label="下一篇: 数据链路层学习笔记">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -267,7 +251,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -275,7 +259,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/&amp;title=定时发送jike脚本" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/&amp;title=记考研之后的旅行" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -283,7 +267,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -325,8 +309,7 @@
         <ul class="post-actions post-action-nav">
             <li class="post-action">
                 
-                    
-                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/01/17/龙族/" data-tooltip="当我们在回忆过去时，我们究竟在回忆什么" aria-label="上一篇: 当我们在回忆过去时，我们究竟在回忆什么">
+                    <a class="post-action-btn btn btn--disabled">
                 
                     <i class="fa fa-angle-left" aria-hidden="true"></i>
                     <span class="hide-xs hide-sm text-small icon-ml">上一篇</span>
@@ -334,7 +317,8 @@
             </li>
             <li class="post-action">
                 
-                    <a class="post-action-btn btn btn--disabled">
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2019/10/13/数据链路层学习笔记/" data-tooltip="数据链路层学习笔记" aria-label="下一篇: 数据链路层学习笔记">
                 
                     <span class="hide-xs hide-sm text-small icon-mr">下一篇</span>
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -352,7 +336,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Weibo">
+                <a class="post-action-btn btn btn--default" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/" title="分享到 Weibo">
                     <i class="fab fa-weibo" aria-hidden="true"></i>
                 </a>
             </li>
@@ -360,7 +344,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/&amp;title=定时发送jike脚本" title="分享到 QQ">
+                <a class="post-action-btn btn btn--default" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/&amp;title=记考研之后的旅行" title="分享到 QQ">
                     <i class="fab fa-qq" aria-hidden="true"></i>
                 </a>
             </li>
@@ -368,7 +352,7 @@
             
             
             <li class="post-action hide-xs">
-                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/" title="分享到 Qzone">
+                <a class="post-action-btn btn btn--default" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/" title="分享到 Qzone">
                     <i class="fa fa-star" aria-hidden="true"></i>
                 </a>
             </li>
@@ -396,7 +380,7 @@
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                    <a class="share-option-btn" target="new" href="http://service.weibo.com/share/share.php?&amp;title=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/">
                         <i class="fab fa-weibo" aria-hidden="true"></i><span>分享到 Weibo</span>
                     </a>
                 </li>
@@ -404,7 +388,7 @@
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/&amp;title=定时发送jike脚本">
+                    <a class="share-option-btn" target="new" href="http://connect.qq.com/widget/shareqq/index.html?url=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/&amp;title=记考研之后的旅行">
                         <i class="fab fa-qq" aria-hidden="true"></i><span>分享到 QQ</span>
                     </a>
                 </li>
@@ -412,7 +396,7 @@
                 
                 
                 <li class="share-option">
-                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2018/12/18/定时发送jike脚本/">
+                    <a class="share-option-btn" target="new" href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://www.skyjooy.cn/2020/01/20/记考研之后的旅行/">
                         <i class="fa fa-star" aria-hidden="true"></i><span>分享到 Qzone</span>
                     </a>
                 </li>
